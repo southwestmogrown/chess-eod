@@ -1,4 +1,5 @@
 const Piece = require('./piece');
+const { findPositions, checkPieceColor } = require('../utils');
 
 class King extends Piece {
     constructor(white) {
@@ -16,16 +17,15 @@ class King extends Piece {
 
     canMove(board, start, end) {
         
-        const startX = start.getX();
-        const startY = start.getY();
-        const endX = end.getX();
-        const endY = end.getY();
-        const endPiece = board[endX][endY].piece;
-        
-        if (endPiece && endPiece.white === this.white) return false;
+        // const startX = start.getX();
+        // const startY = start.getY();
+        // const endX = end.getX();
+        // const endY = end.getY();
+        // const endPiece = board[endX][endY].piece;
 
+        const { startX, startY, endX, endY } = findPositions(start, end);
+        if (checkPieceColor(board, endX, endY, startX, startY)) return false;
         
-
         const moves = [
             [startX + 1, startY],
             [startX - 1, startY],

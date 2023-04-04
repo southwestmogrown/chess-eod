@@ -1,4 +1,5 @@
 const Piece = require('./piece');
+const { findPositions, checkPieceColor } = require('../utils');
 
 class Pawn extends Piece {
     constructor(white) {
@@ -14,26 +15,26 @@ class Pawn extends Piece {
         this.firstMove = !this.firstMove;
     }
 
-    _findPositions(start, end) {
-        return {
-            startX: start.getX(),
-            startY: start.getY(),
-            endX: end.getX(),
-            endY: end.getY(),
-        }
-    }
+    // Moved to utils folder and refactored for other classes to use
+    // _findPositions(start, end) {
+    //     return {
+    //         startX: start.getX(),
+    //         startY: start.getY(),
+    //         endX: end.getX(),
+    //         endY: end.getY(),
+    //     }
+    // }
 
-    _checkPieceColor(board, endX, endY) {
-        const endPiece = board[endX][endY].piece;
+    // _checkPieceColor(board, endX, endY) {
+    //     const endPiece = board[endX][endY].piece;
 
-        return endPiece && endPiece.white === this.white
-    }
+    //     return endPiece && endPiece.white === this.white
+    // }
 
     canMove(board, start, end) {
 
-        const { startX, startY, endX, endY } = this._findPositions(start, end);
-
-        if (this._checkPieceColor(board, endX, endY)) return false;
+        const { startX, startY, endX, endY } = findPositions(start, end);
+        if (checkPieceColor(board, endX, endY, startX, startY)) return false;
 
         const endPiece = board[endX][endY].piece;
         const wMoves = [
@@ -78,9 +79,9 @@ class Pawn extends Piece {
     }
 
     canAttack(board, start, end) {
-        const { startX, startY, endX, endY } = this._findPositions(start, end);
+        const { startX, startY, endX, endY } = findPositions(start, end);
 
-        if (this._checkPieceColor(board, endX, endY)) return false;
+        if (checkPieceColor(board, endX, endY, startX, startY)) return false;
 
         const endPiece = board[endX][endY].piece;
 
