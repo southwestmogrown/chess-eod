@@ -48,7 +48,7 @@ describe('The King class', () => {
     });
 
     describe('the setCastlingDone() method', () => {
-        it('should change the value of the castlingDone property to the value passed in', () => {
+        it('should reverse the value of the "castlingDone" property', () => {
             expect(k1.isCastlingDone()).to.be.false;
             k1.setCastlingDone(true);
             expect(k1.isCastlingDone()).to.be.true;

@@ -10,12 +10,11 @@ class King extends Piece {
         return this.castlingDone;
     }
 
-    setCastlingDone(castlingDone) {
-        this.castlingDone = castlingDone;
+    setCastlingDone() {
+        this.castlingDone = !this.castlingDone;
     }
 
     canMove(board, start, end) {
-
         
         const startX = start.getX();
         const startY = start.getY();
