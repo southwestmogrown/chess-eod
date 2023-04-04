@@ -1,4 +1,4 @@
-const King = require('./piece');
+const King = require('./king');
 
 class Rook extends King {
     constructor(white) {
@@ -6,9 +6,8 @@ class Rook extends King {
     }
 
     canMove(board, start, end) {
-        
+
     }
 }
 
-const rook = new Rook();
-console.log(rook)
+module.exports = Rook;

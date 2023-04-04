@@ -20,6 +20,22 @@ class Piece {
         this.captured = captured;
     }
 
+    findPositions(start, end) {
+        return {
+            startX: start.getX(),
+            startY: start.getY(),
+            endX: end.getX(),
+            endY: end.getY(),
+        }
+    }
+    
+    checkPieceColor(board, endX, endY) {
+        
+        const endPiece = board[endX][endY].piece;
+        
+        return endPiece && endPiece.white === this.white
+    }
+
     canMove(board, start, end) {
 
     }

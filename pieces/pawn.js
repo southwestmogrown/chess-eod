@@ -1,5 +1,4 @@
 const Piece = require('./piece');
-const { findPositions, checkPieceColor } = require('../utils');
 
 class Pawn extends Piece {
     constructor(white) {
@@ -15,7 +14,7 @@ class Pawn extends Piece {
         this.firstMove = !this.firstMove;
     }
 
-    // Moved to utils folder and refactored for other classes to use
+    // Moved to Piece definition and refactored for other classes to use
     // _findPositions(start, end) {
     //     return {
     //         startX: start.getX(),
@@ -33,8 +32,8 @@ class Pawn extends Piece {
 
     canMove(board, start, end) {
 
-        const { startX, startY, endX, endY } = findPositions(start, end);
-        if (checkPieceColor(board, endX, endY, startX, startY)) return false;
+        const { startX, startY, endX, endY } = this.findPositions(start, end);
+        if (this.checkPieceColor(board, endX, endY, startX, startY)) return false;
 
         const endPiece = board[endX][endY].piece;
         const wMoves = [
@@ -79,9 +78,9 @@ class Pawn extends Piece {
     }
 
     canAttack(board, start, end) {
-        const { startX, startY, endX, endY } = findPositions(start, end);
+        const { startX, startY, endX, endY } = this.findPositions(start, end);
 
-        if (checkPieceColor(board, endX, endY, startX, startY)) return false;
+        if (this.checkPieceColor(board, endX, endY, startX, startY)) return false;
 
         const endPiece = board[endX][endY].piece;
 
