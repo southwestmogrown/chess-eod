@@ -16,6 +16,7 @@ class King extends Piece {
 
     canMove(board, start, end) {
         
+        // Moved to Piece class definition
         // const startX = start.getX();
         // const startY = start.getY();
         // const endX = end.getX();
@@ -23,7 +24,7 @@ class King extends Piece {
         // const endPiece = board[endX][endY].piece;
 
         const { startX, startY, endX, endY } = this.findPositions(start, end);
-        if (this.checkPieceColor(board, endX, endY, startX, startY)) return false;
+        if (this.checkPieceColor(board, endX, endY)) return false;
         
         const moves = [
             [startX + 1, startY],

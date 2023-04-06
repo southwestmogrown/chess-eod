@@ -33,7 +33,7 @@ class Pawn extends Piece {
     canMove(board, start, end) {
 
         const { startX, startY, endX, endY } = this.findPositions(start, end);
-        if (this.checkPieceColor(board, endX, endY, startX, startY)) return false;
+        if (this.checkPieceColor(board, endX, endY)) return false;
 
         const endPiece = board[endX][endY].piece;
         const wMoves = [
@@ -74,41 +74,65 @@ class Pawn extends Piece {
             }
         }
 
-        return false;
-    }
-
-    canAttack(board, start, end) {
-        const { startX, startY, endX, endY } = this.findPositions(start, end);
-
-        if (this.checkPieceColor(board, endX, endY, startX, startY)) return false;
-
-        const endPiece = board[endX][endY].piece;
-
-        const wMoves = [
+        const wDiagonalMoves = [
             [startX - 1, startY - 1],
             [startX - 1, startY + 1],
         ];
 
-        const bMoves = [
+        const bDiagonalMoves = [
             [startX + 1, startY - 1],
             [startX + 1, startY + 1],
         ];
 
         if (this.white) {
-            for (let move of wMoves) {
+            for (let move of wDiagonalMoves) {
                 if (move[0] === endX && move[1] === endY && endPiece) {
                     return true;
                 }
             }
         } else {
-            for (let move of bMoves) {
+            for (let move of bDiagonalMoves) {
                 if (move[0] === endX && move[1] === endY && endPiece) {
                     return true;
                 }
             }
         }
+
         return false;
     }
+
+    // canAttack(board, start, end) {
+    //     const { startX, startY, endX, endY } = this.findPositions(start, end);
+
+    //     if (this.checkPieceColor(board, endX, endY)) return false;
+
+    //     const endPiece = board[endX][endY].piece;
+
+    //     const wDiagonalMoves = [
+    //         [startX - 1, startY - 1],
+    //         [startX - 1, startY + 1],
+    //     ];
+
+    //     const bDiagonalMoves = [
+    //         [startX + 1, startY - 1],
+    //         [startX + 1, startY + 1],
+    //     ];
+
+    //     if (this.white) {
+    //         for (let move of wDiagonalMoves) {
+    //             if (move[0] === endX && move[1] === endY && endPiece) {
+    //                 return true;
+    //             }
+    //         }
+    //     } else {
+    //         for (let move of bDiagonalMoves) {
+    //             if (move[0] === endX && move[1] === endY && endPiece) {
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    //     return false;
+    // }
 
 }
 

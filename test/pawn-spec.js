@@ -222,82 +222,82 @@ describe('The Pawn class', () => {
 
         });
 
+        context('a piece of the opposing color is in a diagonal square', () => {
+            it('should allow a white pawn to attack in a forward diagonal', () => {
+                const p3 = new Pawn()
+                p1.setFirstMove();
+                const testB = b.generateTestBoard();
+                testB[2][3] = new Square(2, 3, p2);
+                testB[3][4] = new Square(3 ,4, p1);
+                testB[2][5] = new Square(2 ,5, p3);
+        
+                /*
+                    [
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','p','.','p','.','.'],
+                    ['.','.','.','.','P','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ]
+                */
+    
+                expect(p1.canMove(testB, testB[3][4], testB[2][3])).to.be.true;
+                expect(p1.canMove(testB, testB[3][4], testB[2][5])).to.be.true;
+            });
+    
+            it('should allow a black pawn to attack in a forward diagonal', () => {
+                const p3 = new Pawn()
+                p1.setFirstMove();
+                p2.setFirstMove();
+                const testB = b.generateTestBoard();
+                testB[2][3] = new Square(2, 3, p2);
+                testB[3][4] = new Square(3 ,4, p1);
+                testB[2][5] = new Square(2 ,5, p3);
+        
+                /*
+                    [
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','p','.','p','.','.'],
+                    ['.','.','.','.','P','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ]
+                */
+    
+                expect(p2.canMove(testB, testB[2][3], testB[3][4])).to.be.true;
+                expect(p3.canMove(testB, testB[2][5], testB[3][4])).to.be.true;
+            });
+    
+        
+            it ('should not allow a pawn to move to an unoccupied square diagonally', () => {
+                const testB = b.generateTestBoard();
+                testB[2][3] = new Square(2, 3, p2);
+                testB[3][4] = new Square(3 ,4, p1);
+    
+                /*
+                    [
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','p','.','.','.','.'],
+                    ['.','.','.','.','P','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ['.','.','.','.','.','.','.','.'],
+                    ]
+                */
+    
+                expect(p1.canMove(testB, testB[3][4], testB[2][5])).to.be.false;
+                expect(p2.canMove(testB, testB[2][3], testB[3][2])).to.be.false;
+            });
+        });
     });
 
-    describe('the canAttack() method', () => {
-        it('should allow a white pawn to attack in a forward diagonal', () => {
-            const p3 = new Pawn()
-            p1.setFirstMove();
-            const testB = b.generateTestBoard();
-            testB[2][3] = new Square(2, 3, p2);
-            testB[3][4] = new Square(3 ,4, p1);
-            testB[2][5] = new Square(2 ,5, p3);
-    
-            /*
-                [
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','p','.','p','.','.'],
-                ['.','.','.','.','P','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ]
-            */
-
-            expect(p1.canAttack(testB, testB[3][4], testB[2][3])).to.be.true;
-            expect(p1.canAttack(testB, testB[3][4], testB[2][5])).to.be.true;
-        });
-
-        it('should allow a black pawn to attack in a forward diagonal', () => {
-            const p3 = new Pawn()
-            p1.setFirstMove();
-            p2.setFirstMove();
-            const testB = b.generateTestBoard();
-            testB[2][3] = new Square(2, 3, p2);
-            testB[3][4] = new Square(3 ,4, p1);
-            testB[2][5] = new Square(2 ,5, p3);
-    
-            /*
-                [
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','p','.','p','.','.'],
-                ['.','.','.','.','P','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ]
-            */
-
-            expect(p2.canAttack(testB, testB[2][3], testB[3][4])).to.be.true;
-            expect(p3.canAttack(testB, testB[2][5], testB[3][4])).to.be.true;
-        });
-
-    
-        it ('should not allow a pawn to move to an unoccupied square diagonally', () => {
-            const testB = b.generateTestBoard();
-            testB[2][3] = new Square(2, 3, p2);
-            testB[3][4] = new Square(3 ,4, p1);
-
-            /*
-                [
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','p','.','.','.','.'],
-                ['.','.','.','.','P','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
-                ]
-            */
-
-            expect(p1.canAttack(testB, testB[3][4], testB[2][5])).to.be.false;
-            expect(p2.canAttack(testB, testB[2][3], testB[3][2])).to.be.false;
-        });
-    });
 
 });
