@@ -1,4 +1,4 @@
-const Square = require('../squares/square');
+const Square = require('../squares');
 const {
     King,
     Piece

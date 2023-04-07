@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const { Rook, King, Piece } = require('../pieces');
 const Board = require('../board');
-const Square = require('../squares/square');
+const Square = require('../squares');
 
 describe('The Rook class', () => {
     let r1;

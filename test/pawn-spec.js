@@ -5,7 +5,7 @@ const {
     Pawn,
     Piece
 } = require('../pieces');
-const Square = require('../squares/square');
+const Square = require('../squares');
 
 describe('The Pawn class', () => {
 

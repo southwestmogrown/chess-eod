@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const Square = require('../squares/square');
+const Square = require('../squares');
 const Board = require('../board');
 const {
     Piece,
