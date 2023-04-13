@@ -3,7 +3,8 @@ const { expect } = require('chai');
 const Board = require('../board');
 
 const {
-    Bishop
+    Bishop,
+    Piece
 } = require('../pieces');
 
 const Square = require('../squares');
@@ -18,6 +19,13 @@ describe('The Bishop class', () => {
         b2 = new Bishop;
         board = new Board();
     });
+
+    describe('the constructor function', () => {
+        it('should inherit from the piece class', () => {
+            expect(b1 instanceof Piece).to.be.true;
+            expect(b1 instanceof Bishop).to.be.true;
+        })
+    })
 
     describe('the canMove() method', () => {
         it('should allow a bishop to move any distance in an up-left trajectory', () => {
