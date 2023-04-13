@@ -83,7 +83,7 @@ describe('The Pawn class', () => {
             
             it('should allow a white pawn to move 1 square towards enemy territory', () => {
                 
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[6][3] = new Square(6, 3, p1);
         
                 /*
@@ -105,7 +105,7 @@ describe('The Pawn class', () => {
 
             it('should allow a white pawn to move 2 squares towards enemy territory', () => {
                 
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[6][3] = new Square(6, 3, p1);
         
                 /*
@@ -127,7 +127,7 @@ describe('The Pawn class', () => {
 
             it('should allow a black pawn to move 1 square towards enemy territory', () => {
                 let p3 = new Pawn();
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[1][3] = new Square(1, 3, p3);
         
                 /*
@@ -149,7 +149,7 @@ describe('The Pawn class', () => {
 
             it('should allow a black pawn to move 2 squares towards enemy territory', () => {
                 let p3 = new Pawn();
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[1][3] = new Square(1, 3, p3);
                 // console.log(testB)
                 /*
@@ -176,7 +176,7 @@ describe('The Pawn class', () => {
             it('should allow a white pawn to move only 1 square towards enemy territory', () => {
                 p1.setFirstMove();
                 
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[4][3] = new Square(4, 3, p1);
         
                 /*
@@ -199,7 +199,7 @@ describe('The Pawn class', () => {
 
             it('should allow a black pawn to move only 1 square towards enemy territory', () => {
                 
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[2][3] = new Square(2, 3, p2);
         
                 /*
@@ -226,7 +226,7 @@ describe('The Pawn class', () => {
             it('should allow a white pawn to attack in a forward diagonal', () => {
                 const p3 = new Pawn()
                 p1.setFirstMove();
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[2][3] = new Square(2, 3, p2);
                 testB[3][4] = new Square(3 ,4, p1);
                 testB[2][5] = new Square(2 ,5, p3);
@@ -252,7 +252,7 @@ describe('The Pawn class', () => {
                 const p3 = new Pawn()
                 p1.setFirstMove();
                 p2.setFirstMove();
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[2][3] = new Square(2, 3, p2);
                 testB[3][4] = new Square(3 ,4, p1);
                 testB[2][5] = new Square(2 ,5, p3);
@@ -276,7 +276,7 @@ describe('The Pawn class', () => {
     
         
             it ('should not allow a pawn to move to an unoccupied square diagonally', () => {
-                const testB = b.generateTestBoard();
+                const testB = b.generateBoard();
                 testB[2][3] = new Square(2, 3, p2);
                 testB[3][4] = new Square(3 ,4, p1);
     

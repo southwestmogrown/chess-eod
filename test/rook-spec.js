@@ -28,7 +28,7 @@ describe('The Rook class', () => {
 
         it ('should be able to move up to any unoccupied square', () => {
             const b = new Board;
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
 
             testB[3][4] = new Square(3, 4, r1);
 
@@ -53,7 +53,7 @@ describe('The Rook class', () => {
 
         it ('should be able to move down to any unoccupied square', () => {
             const b = new Board;
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
 
             testB[3][4] = new Square(3, 4, r1);
 
@@ -79,7 +79,7 @@ describe('The Rook class', () => {
 
         it ('should be able to move left to any unoccupied square', () => {
             const b = new Board;
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
 
             testB[3][4] = new Square(3, 4, r1);
 
@@ -105,7 +105,7 @@ describe('The Rook class', () => {
 
         it ('should be able to move right to any unoccupied square', () => {
             const b = new Board;
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
 
             testB[3][4] = new Square(3, 4, r1);
 
@@ -130,7 +130,7 @@ describe('The Rook class', () => {
 
         it('should not be allowed to move diagonally', () => {
             const b = new Board;
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
 
             testB[3][4] = new Square(3, 4, r1);
 
@@ -156,7 +156,7 @@ describe('The Rook class', () => {
         it('should not allow a rook to move beyond an occupied square', () => {
 
             const b = new Board;
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
 
             testB[3][4] = new Square(3, 4, r1);
             testB[2][4] = new Square(2, 4, r2);

@@ -32,7 +32,7 @@ class Board {
 // console.log(b.board)
 // const k = new King();
 // const p = new Piece();
-// const tb = b.generateTestBoard(k, p)
+// const tb = b.generateBoard(k, p)
 // console.log(tb)
 // console.log(k.canMove(tb, tb[3][4], tb[3][5]));
 

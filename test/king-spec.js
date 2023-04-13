@@ -61,7 +61,7 @@ describe('The King class', () => {
             
             const b = new Board();
             // create a new board for testing
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
             // add pieces to the desired location
             testB[3][4] = new Square(3,4,k1);
 
@@ -91,7 +91,7 @@ describe('The King class', () => {
         it('should not allow the king to move more than a single space', () => {
             const b = new Board();
             // create a new board for testing
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
             // add pieces to the desired location
             testB[3][4] = new Square(3,4,k1);
             /*
@@ -121,7 +121,7 @@ describe('The King class', () => {
             let p = new Piece();
             const b = new Board();
             // create a new board for testing
-            const testB = b.generateTestBoard();
+            const testB = b.generateBoard();
             // add pieces to the desired location
             testB[3][4] = new Square(3,4,k1);
             testB[3][5] = new Square(3,5,p);
