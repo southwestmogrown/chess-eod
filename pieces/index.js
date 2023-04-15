@@ -4,6 +4,7 @@ const Pawn = require('./pawn');
 const Rook = require('./rook');
 const Bishop = require('./bishop');
 const Knight = require('./knight');
+const Queen = require('./queen');
 
 module.exports = {
     King,
@@ -11,5 +12,6 @@ module.exports = {
     Pawn,
     Rook,
     Bishop,
-    Knight
+    Knight,
+    Queen
 }

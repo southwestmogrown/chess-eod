@@ -1,16 +1,35 @@
-const  Piece  = require('./piece');
+const Piece = require('./piece');
 
-class Bishop extends Piece {
+class Queen extends Piece {
     constructor(white) {
         super(white);
     }
 
     canMove(board, start, end) {
         const { startX, startY, endX, endY } = this.findPositions(start, end);
-
         if (this.checkPieceColor(board, endX, endY)) return false;
-        if (Math.abs(startX - endX) !== Math.abs(startY - endY)) return false
 
+        if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
+
+        // up
+        for (let row = startX; row > endX + 1; row--) {
+            if (board[row - 1][startY].getPiece()) return false;
+        }
+
+        //down
+        for (let row = startX; row < endX - 1; row++) {
+            if (board[row + 1][startY].getPiece()) return false;
+        }
+
+        // left
+        for (let col = startY; col > endY + 1; col--) {
+            if (board[startX][col - 1].getPiece()) return false;
+        }
+
+        // right
+        for (let col = startY; col < endY - 1; col++) {
+            if (board[startX][col + 1].getPiece()) return false;
+        }
 
         // up/left
         for (let row = startX; row > endX + 1; row--) {
@@ -41,7 +60,7 @@ class Bishop extends Piece {
         }
 
         return true;
-    } 
+    }
 }
 
-module.exports = Bishop;
+module.exports = Queen;

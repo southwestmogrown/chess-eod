@@ -9,33 +9,26 @@ class Rook extends King {
         const { startX, startY, endX, endY } = this.findPositions(start, end);
 
         if (this.checkPieceColor(board, endX, endY)) return false;
+        
         if ((startX !== endX) && (startY !== endY)) return false;
-        // up
-        for (let i = endX; i < startX; i++) {
-            if (board[i][startY].getPiece()) {
-                return false;
-            } 
+
+        for (let row = startX; row > endX + 1; row--) {
+            if (board[row - 1][startY].getPiece()) return false;
         }
 
-        // down
-        for (let i = endX; i > startX; i--) {
-            if (board[i][startY].getPiece()) {
-                return false;
-            }
+        //down
+        for (let row = startX; row < endX - 1; row++) {
+            if (board[row + 1][startY].getPiece()) return false;
         }
 
         // left
-        for (let i = endY; i < startY; i++) {
-            if (board[startX][i].getPiece()) {
-                return false;
-            }
+        for (let col = startY; col > endY + 1; col--) {
+            if (board[startX][col - 1].getPiece()) return false;
         }
 
         // right
-        for (let i = endY; i > startY; i--) {
-            if (board[startX][i].getPiece()) {
-                return false;
-            }
+        for (let col = startY; col < endY - 1; col++) {
+            if (board[startX][col + 1].getPiece()) return false;
         }
 
         return true;

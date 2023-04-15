@@ -176,9 +176,14 @@ describe('The Rook class', () => {
                 ['.','.','.','.','.','.','.','.'],
                 ]
             */
-            // expect(r1.canMove(testB, testB[3][4], testB[0][4])).to.be.false;
-            // expect(r1.canMove(testB, testB[3][4], testB[3][0])).to.be.false;
-            // expect(r1.canMove(testB, testB[3][4], testB[3][7])).to.be.false;
+
+            expect(r1.canMove(testB, testB[3][4], testB[3][3])).to.be.true;
+            expect(r1.canMove(testB, testB[3][4], testB[3][5])).to.be.true;
+            expect(r1.canMove(testB, testB[3][4], testB[2][4])).to.be.true;
+            expect(r1.canMove(testB, testB[3][4], testB[4][4])).to.be.true;
+            expect(r1.canMove(testB, testB[3][4], testB[0][4])).to.be.false;
+            expect(r1.canMove(testB, testB[3][4], testB[3][0])).to.be.false;
+            expect(r1.canMove(testB, testB[3][4], testB[3][7])).to.be.false;
             expect(r1.canMove(testB, testB[3][4], testB[4][7])).to.be.false;
 
         });
