@@ -22,7 +22,7 @@ describe('The Knight class', () => {
 
     describe('the canMove() method', () => {
         it ('should only be able to move in an L shape.', () => {
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, k1);
     
             /*

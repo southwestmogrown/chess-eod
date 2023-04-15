@@ -30,7 +30,7 @@ describe('The Bishop class', () => {
     describe('the canMove() method', () => {
         it('should allow a bishop to move any distance in an up-left trajectory', () => {
 
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, b1);
     
             /*
@@ -52,7 +52,7 @@ describe('The Bishop class', () => {
 
         it('should allow a bishop to move any distance in an up-right trajectory', () => {
 
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, b1);
     
             /*
@@ -74,7 +74,7 @@ describe('The Bishop class', () => {
 
         it('should allow a bishop to move any distance in an down-left trajectory', () => {
 
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, b1);
     
             /*
@@ -96,7 +96,7 @@ describe('The Bishop class', () => {
 
         it('should allow a bishop to move any distance in an down-right trajectory', () => {
 
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, b1);
     
             /*
@@ -118,7 +118,7 @@ describe('The Bishop class', () => {
 
         it('should not allow a bishop to move any direction other than diagonally', () => {
 
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, b1);
 
     
@@ -145,7 +145,7 @@ describe('The Bishop class', () => {
 
         it('should not allow a bishop to move beyond an occupied space', () => {
 
-            const testB = board.generateBoard();
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, b1);
             testB[2][1] = new Square(2, 1, b2);
             testB[1][6] = new Square(1, 6, b2);
