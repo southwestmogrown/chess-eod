@@ -4,6 +4,7 @@ class Pawn extends Piece {
     constructor(white) {
         super(white);
         this.firstMove = true;
+        this.symbol = 'p';
     }
 
     getFirstMove() {

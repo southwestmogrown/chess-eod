@@ -3,6 +3,7 @@ const  Piece  = require('./piece');
 class Bishop extends Piece {
     constructor(white) {
         super(white);
+        this.symbol = 'b';
     }
 
     canMove(board, start, end) {

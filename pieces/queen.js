@@ -3,6 +3,7 @@ const Piece = require('./piece');
 class Queen extends Piece {
     constructor(white) {
         super(white);
+        this.symbol = 'q';
     }
 
     canMove(board, start, end) {

@@ -4,6 +4,7 @@ class King extends Piece {
     constructor(white) {
         super(white);
         this.castlingDone = false;
+        this.symbol = 'k';
     }
 
     isCastlingDone() {

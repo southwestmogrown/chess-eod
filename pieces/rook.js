@@ -3,6 +3,7 @@ const King = require('./king');
 class Rook extends King {
     constructor(white) {
         super(white);
+        this.symbol = 'r';
     }
 
     canMove(board, start, end) {

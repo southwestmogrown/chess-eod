@@ -1,8 +1,8 @@
 const Player = require('./player');
 
 class HumanPlayer extends Player {
-    constructor(isWhiteSide) {
-        super(isWhiteSide);
+    constructor(name, isWhiteSide) {
+        super(name, isWhiteSide);
         this.isHuman = true;
     }
 }
