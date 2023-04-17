@@ -1,16 +1,10 @@
-// const readline = require('readline');
-
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// });
-
 let prompt = require('prompt-sync')();
 
 const Board = require('../board');
 const Screen = require('./screen');
 const Cursor = require('./cursor');
 const { HumanPlayer, Player } = require('../players');
+const { MovesList } = require('../moves');
 
 const GameStatus = {
     ACTIVE: 'ACTIVE',
@@ -20,20 +14,16 @@ const GameStatus = {
     STALEMATE: 'STALEMATE',
     RESIGNATION: 'RESIGNATION'
 }
-// rl.question('Player one, please enter your name. ', (answer) => {
-    //     res(answer);
-    //     console.log(`Welcome ${answer}!`);
-    //     rl.close();
-    // });
+
 class Game {
     constructor() {
         const p1Name = prompt('Player 1, please enter your name. ');
         console.log(`Welcome ${p1Name}\n`)
         const p2Name = prompt('Player 2, please enter your name. ');
         console.log(`Welcome ${p2Name}\n`)
-        setTimeout(() => console.log('Initializing in 3...'), 1000);
-        setTimeout(() => console.log('2...'), 2000);
-        setTimeout(() => console.log('1...'), 3000);
+        // setTimeout(() => console.log('Initializing in 3...'), 1000);
+        // setTimeout(() => console.log('2...'), 2000);
+        // setTimeout(() => console.log('1...'), 3000);
 
     
         setTimeout(() => {
@@ -69,7 +59,7 @@ class Game {
             Screen.setMessage(`${this.currentPlayer.name}'s turn!`)
             Screen.render();
 
-        }, 4000)
+        }, 500)
     }
 
     static checkWin(grid) {
@@ -101,7 +91,17 @@ class Game {
     }
 
     select() {
-        
+        const { row: cRow, col: cCol} = this.cursor.position();
+
+
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                if (row === cRow && col === cCol) {
+                    continue;
+                } 
+                Screen.setBackgroundColor(row, col, 'black');
+            }
+        }
         const square = this.gameBoard.board[this.cursor.row][this.cursor.col];
         const piece = square.getPiece()
         if (!piece) {
@@ -109,25 +109,50 @@ class Game {
             Screen.render();
         } else if (piece.isWhite() !== this.currentPlayer.getIsWhiteSide()){
             Screen.setMessage("Invalid piece selection.");
-            Screen.render();
+            Screen.render()
         } else {
-            const validMoves = this.validMoves(piece, square);
+            const movesList = this.validMoves(piece, square);
 
-            console.log(validMoves)
+            if (!movesList.length) {
+                Screen.setMessage("Cannot move this piece");
+                Screen.render();
+            } else {
+                const move = this.chooseMove(movesList)
+                
+            }
+            
         }
+    }
+
+    chooseMove(movesList) {
+        
+        let curr = movesList.head;
+        let count = 1;
+        while (curr && count <= movesList.length) {
+            const [row, col] = curr.val;
+            Screen.setBackgroundColor(row, col, 'green')
+            
+            curr = curr.next;
+            count++;
+        }
+        this.cursor.setIsMoveSelection();
+        Screen.setMessage('Where would you like to move?')
+        Screen.render();
     }
     
     validMoves(piece, square) {
-        let moves = [];
+        let moves = new MovesList();
         let board = this.gameBoard.board
 
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[row].length; col++) {
                 if (piece.canMove(board, square, board[row][col])) {
-                    moves.push([row, col]);
+                    moves.addToTail([row, col]);
                 }
             }
         }
+        this.cursor.currentMove = moves.head;
+        Screen.availableMoves = moves;
         return moves;
     }
 }

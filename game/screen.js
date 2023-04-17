@@ -6,6 +6,7 @@ class Screen {
     static numCols = 0;
     static numRows = 0;
     static grid = [];
+    static availableMoves = null;
 
     static borderChar = " ";
     static spacerCount = 1;
@@ -96,6 +97,10 @@ class Screen {
         //!!ADD
         // // process.exit(1);                                  // #2 of 13
         //!!END_ADD
+    }
+
+    static setAvailableMoves(moves) {
+        this.availableMoves = moves;
     }
 
     static setBackgroundColor(row, col, color) {
@@ -296,30 +301,5 @@ class Screen {
 
 }
 
-function startGame() {
-    console.clear();
-    console.log("Welcome to App Academy Adventure!\n");
-
-    rl.question('Please enter your name: ', (name) => {
-        console.clear();
-        console.log(`Hello, ${name}!\n`);
-
-        // Create the world and player
-        world = new World();
-        world.loadWorld(worldData);
-        player = new Player(name, world.rooms[1]);
-
-        // Show commands
-        printHelp();
-
-        rl.question('\nHit RETURN to start your adventure\n', () => {
-
-            console.clear();
-            player.currentRoom.printRoom();
-
-            processCommand();
-        });
-    });
-}
 
 module.exports = Screen;
