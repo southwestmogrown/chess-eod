@@ -2,6 +2,11 @@ class Piece {
     constructor(white=false) {
         this.white = white;
         this.captured = false;
+        this.symbol = '*'
+    }
+
+    getSymbol() {
+        return this.symbol;
     }
 
     isWhite() {

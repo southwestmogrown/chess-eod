@@ -3,16 +3,14 @@ const King = require('./king');
 class Rook extends King {
     constructor(white) {
         super(white);
-        this.symbol = 'r';
+        this.symbol = 'r'
     }
 
     canMove(board, start, end) {
         const { startX, startY, endX, endY } = this.findPositions(start, end);
 
         if (this.checkPieceColor(board, endX, endY)) return false;
-        
         if ((startX !== endX) && (startY !== endY)) return false;
-
         for (let row = startX; row > endX + 1; row--) {
             if (board[row - 1][startY].getPiece()) return false;
         }

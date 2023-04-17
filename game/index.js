@@ -3,7 +3,7 @@ let prompt = require('prompt-sync')();
 const Board = require('../board');
 const Screen = require('./screen');
 const Cursor = require('./cursor');
-const { HumanPlayer, Player } = require('../players');
+const { HumanPlayer } = require('../players');
 const { MovesList } = require('../moves');
 
 const GameStatus = {
@@ -43,6 +43,8 @@ class Game {
             this.status = GameStatus.ACTIVE;
     
             this.cursor = new Cursor(8, 8);
+
+            this.startingPosition = null;
     
             Screen.initialize(8, 8, this.gameBoard.board)
             Screen.setGridLines(true);
@@ -78,49 +80,73 @@ class Game {
         Screen.quit();
     }
 
-    doMove(row, col) {
-        this.grid[row][col] = this.playerTurn;
-        Screen.setGrid(row, col, this.playerTurn);
+    doMove(endCoords) {
+        const [ endRow, endCol ] = endCoords;
+        const [ startRow, startCol ] = this.startingPosition; 
+        const board = this.gameBoard.board;
+        const endPiece = board[endRow][endCol].getPiece();
+        const startPiece = board[startRow][startCol].getPiece();
 
-        let winner = TTT.checkWin(this.grid);
-        if (winner) return TTT.endGame(winner);
+        if (!endPiece) {
+            board[endRow][endCol].setPiece(startPiece);
+            board[startRow][startCol].setPiece(null);
+            Screen.setGrid(startRow, startCol, ' ');
+            let symbol = startPiece.getSymbol();
+            symbol = startPiece.isWhite ? symbol.toUpperCase() : symbol;
+            Screen.setGrid(endRow, endCol, symbol);
+        }
 
-        this.playerTurn = this.playerTurn === 'X' ? 'O' : 'X';
-        Screen.setMessage(`Player ${this.playerTurn}'s turn`);
+
+        // Screen.setMessage(piece)
+        // this.grid[row][col] = this.playerTurn;
+        // Screen.setGrid(row, col, this.playerTurn);
+
+        // let winner = TTT.checkWin(this.grid);
+        // if (winner) return TTT.endGame(winner);
+
+        // this.playerTurn = this.playerTurn === 'X' ? 'O' : 'X';
+        // Screen.setMessage(`Player ${this.playerTurn}'s turn`);
         Screen.render();
     }
 
     select() {
         const { row: cRow, col: cCol} = this.cursor.position();
 
-
-        for (let row = 0; row < 8; row++) {
-            for (let col = 0; col < 8; col++) {
-                if (row === cRow && col === cCol) {
-                    continue;
-                } 
-                Screen.setBackgroundColor(row, col, 'black');
-            }
-        }
-        const square = this.gameBoard.board[this.cursor.row][this.cursor.col];
-        const piece = square.getPiece()
-        if (!piece) {
-            Screen.setMessage("You must select a piece.");
-            Screen.render();
-        } else if (piece.isWhite() !== this.currentPlayer.getIsWhiteSide()){
-            Screen.setMessage("Invalid piece selection.");
-            Screen.render()
+        if (this.cursor.getIsMoveSelection()) {
+            
+            this.doMove([cRow, cCol]);
+            this.cursor.setIsMoveSelection();
         } else {
-            const movesList = this.validMoves(piece, square);
-
-            if (!movesList.length) {
-                Screen.setMessage("Cannot move this piece");
+    
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (row === cRow && col === cCol) {
+                        continue;
+                    } 
+                    Screen.setBackgroundColor(row, col, 'black');
+                }
+            }
+            const square = this.gameBoard.board[this.cursor.row][this.cursor.col];
+            const piece = square.getPiece()
+            if (!piece) {
+                Screen.setMessage("You must select a piece.");
                 Screen.render();
+            } else if (piece.isWhite() !== this.currentPlayer.getIsWhiteSide()){
+                Screen.setMessage("Invalid piece selection.");
+                Screen.render()
             } else {
-                const move = this.chooseMove(movesList)
+                
+                const movesList = this.validMoves(piece, square);
+    
+                if (!movesList.length) {
+                    Screen.setMessage("Cannot move this piece");
+                    Screen.render();
+                } else {
+                    this.chooseMove(movesList)
+                    this.startingPosition = [cRow, cCol];
+                }
                 
             }
-            
         }
     }
 
@@ -156,5 +182,7 @@ class Game {
         return moves;
     }
 }
+
+
 
 module.exports = Game;

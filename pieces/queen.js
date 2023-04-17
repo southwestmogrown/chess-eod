@@ -11,7 +11,6 @@ class Queen extends Piece {
         if (this.checkPieceColor(board, endX, endY)) return false;
 
         if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
-
         // up
         for (let row = startX; row > endX + 1; row--) {
             if (board[row - 1][startY].getPiece()) return false;

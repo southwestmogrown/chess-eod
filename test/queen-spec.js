@@ -29,7 +29,7 @@ describe('The Queen Class', () => {
         
         it ('should be able to move any number of spaces up', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -53,7 +53,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces down', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -76,7 +76,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces left', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -99,7 +99,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces right', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -123,7 +123,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces up/left diagonally', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -146,7 +146,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces up/right diagonally', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -170,7 +170,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces down/left diagonally', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -193,7 +193,7 @@ describe('The Queen Class', () => {
 
         it ('should be able to move any number of spaces down/right diagonally', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
     
             /*
@@ -216,7 +216,7 @@ describe('The Queen Class', () => {
 
         it ('should not be able to move to any space beyond an occupied space', () => {
 
-            const testB = board.board;
+            const testB = board.generateTestBoard();
             testB[4][3] = new Square(4, 3, q1);
             testB[2][3] = new Square(2, 3, q2);
             testB[6][3] = new Square(6, 3, q2);
@@ -279,7 +279,7 @@ describe('The Queen Class', () => {
 
     it ('should not be able to move to a square that is not exactly up, down, left, right, or diagonal', () => {
 
-        const testB = board.board;
+        const testB = board.generateTestBoard();
         testB[4][3] = new Square(4, 3, q1);
 
         /*
