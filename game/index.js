@@ -87,14 +87,16 @@ class Game {
         const endPiece = board[endRow][endCol].getPiece();
         const startPiece = board[startRow][startCol].getPiece();
 
-        if (!endPiece) {
-            board[endRow][endCol].setPiece(startPiece);
-            board[startRow][startCol].setPiece(null);
-            Screen.setGrid(startRow, startCol, ' ');
-            let symbol = startPiece.getSymbol();
-            symbol = startPiece.isWhite ? symbol.toUpperCase() : symbol;
-            Screen.setGrid(endRow, endCol, symbol);
+        if (endPiece) {
+            endPiece.setCaptured();
         }
+        board[endRow][endCol].setPiece(startPiece);
+        board[startRow][startCol].setPiece(null);
+        Screen.setGrid(startRow, startCol, ' ');
+        let symbol = startPiece.getSymbol();
+        symbol = startPiece.isWhite ? symbol.toUpperCase() : symbol;
+        Screen.setGrid(endRow, endCol, symbol);
+
 
 
         // Screen.setMessage(piece)
@@ -109,23 +111,31 @@ class Game {
         Screen.render();
     }
 
+    _resetBackground(cRow, cCol) {
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                if (row === cRow && col === cCol) {
+                    continue;
+                } 
+                Screen.setBackgroundColor(row, col, 'black');
+            }
+        }
+    }
+
     select() {
         const { row: cRow, col: cCol} = this.cursor.position();
 
         if (this.cursor.getIsMoveSelection()) {
             
             this.doMove([cRow, cCol]);
+            this.currentPlayer = this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
             this.cursor.setIsMoveSelection();
+            this._resetBackground(cRow, cCol);
+            Screen.setMessage(`${this.currentPlayer.name}'s move!`);
+            Screen.render();
         } else {
     
-            for (let row = 0; row < 8; row++) {
-                for (let col = 0; col < 8; col++) {
-                    if (row === cRow && col === cCol) {
-                        continue;
-                    } 
-                    Screen.setBackgroundColor(row, col, 'black');
-                }
-            }
+            this._resetBackground(cRow, cCol);
             const square = this.gameBoard.board[this.cursor.row][this.cursor.col];
             const piece = square.getPiece()
             if (!piece) {
@@ -133,7 +143,7 @@ class Game {
                 Screen.render();
             } else if (piece.isWhite() !== this.currentPlayer.getIsWhiteSide()){
                 Screen.setMessage("Invalid piece selection.");
-                Screen.render()
+                Screen.render();
             } else {
                 
                 const movesList = this.validMoves(piece, square);
@@ -142,8 +152,8 @@ class Game {
                     Screen.setMessage("Cannot move this piece");
                     Screen.render();
                 } else {
-                    this.chooseMove(movesList)
                     this.startingPosition = [cRow, cCol];
+                    this.chooseMove(movesList)
                 }
                 
             }
@@ -171,13 +181,14 @@ class Game {
         let board = this.gameBoard.board
 
         for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
+            for (let col = 0; col < board[0].length; col++) {
                 if (piece.canMove(board, square, board[row][col])) {
                     moves.addToTail([row, col]);
                 }
             }
         }
         this.cursor.currentMove = moves.head;
+    
         Screen.availableMoves = moves;
         return moves;
     }

@@ -21,8 +21,8 @@ class Piece {
         return this.captured;
     }
 
-    setCaptured(captured) {
-        this.captured = captured;
+    setCaptured() {
+        this.captured = !this.captured;
     }
 
     findPositions(start, end) {

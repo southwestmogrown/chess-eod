@@ -31,11 +31,13 @@ describe('The Rook class', () => {
             const testB = b.generateTestBoard();
 
             testB[3][4] = new Square(3, 4, r1);
+            testB[1][4] = new Square(1, 4, r2);
+            testB[0][4] = new Square(0, 4, r2);
 
             /*
                 [
-                ['.','.','.','.','.','.','.','.'],
-                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','r','.','.','.'],
+                ['.','.','.','.','r','.','.','.'],
                 ['.','.','.','.','.','.','.','.'],
                 ['.','.','.','.','R','.','.','.'],
                 ['.','.','.','.','.','.','.','.'],
@@ -47,7 +49,7 @@ describe('The Rook class', () => {
 
             expect(r1.canMove(testB, testB[3][4], testB[2][4])).to.be.true;
             expect(r1.canMove(testB, testB[3][4], testB[1][4])).to.be.true;
-            expect(r1.canMove(testB, testB[3][4], testB[0][4])).to.be.true;
+            expect(r1.canMove(testB, testB[3][4], testB[0][4])).to.be.false;
 
         });
 

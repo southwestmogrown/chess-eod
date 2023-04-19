@@ -32,7 +32,6 @@ class Cursor {
         
         Screen.addCommand('s', 'select a different piece', () => {
             const { row: cRow, col: cCol} = this.position();
-            this.setIsMoveSelection()
             for (let row = 0; row < 8; row++) {
                 for (let col = 0; col < 8; col++) {
                     if (row === cRow && col === cCol) {
@@ -41,6 +40,7 @@ class Cursor {
                     Screen.setBackgroundColor(row, col, 'black');
                 }
             }
+            this.setIsMoveSelection()
             Screen.render()
         });
         Screen.setBackgroundColor(this.row, this.col, 'green');
