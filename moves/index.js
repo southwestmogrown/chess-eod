@@ -1,7 +1,9 @@
 const Move = require('./move');
-const MovesList = require('./move-list');
+const { AvailableMovesList } = require('./available-move-list');
+const CompletedMovesList = require('./completed-move-list');
 
 module.exports = {
     Move,
-    MovesList
+    AvailableMovesList,
+    CompletedMovesList
 }

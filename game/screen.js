@@ -3,6 +3,24 @@ const Command = require('./command');
 
 class Screen {
 
+    static whitePieces = {
+        'k': '0x265A',
+        'q': '0x265B',
+        'r': '0x265C',
+        'b': '0x265D',
+        'n': '0x265E',
+        'p': '0x265F'
+    }
+
+    static blackPieces = {
+        'k': '0x2654',
+        'q': '0x2655',
+        'r': '0x2656',
+        'b': '0x2657',
+        'n': '0x2658',
+        'p': '0x2659'
+    }
+
     static numCols = 0;
     static numRows = 0;
     static grid = [];
@@ -41,9 +59,9 @@ class Screen {
                 const piece = board[row][col].getPiece();
                 if (piece) {
                     if (piece.isWhite()) {
-                        Screen.grid[row][col] = piece.symbol.toUpperCase();
+                        Screen.grid[row][col] = String.fromCharCode(Screen.whitePieces[piece.symbol]);
                     } else {
-                        Screen.grid[row][col] = piece.symbol;
+                        Screen.grid[row][col] = String.fromCharCode(Screen.blackPieces[piece.symbol]);
                     }
                 } else {
                     Screen.grid[row][col] = ' '

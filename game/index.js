@@ -4,7 +4,7 @@ const Board = require('../board');
 const Screen = require('./screen');
 const Cursor = require('./cursor');
 const { HumanPlayer } = require('../players');
-const { MovesList } = require('../moves');
+const { AvailableMovesList, CompletedMovesList, Move } = require('../moves');
 
 const GameStatus = {
     ACTIVE: 'ACTIVE',
@@ -41,6 +41,7 @@ class Game {
     
             this.gameBoard = new Board();
             this.status = GameStatus.ACTIVE;
+            this.completedMoves = new CompletedMovesList();
     
             this.cursor = new Cursor(8, 8);
 
@@ -90,11 +91,13 @@ class Game {
         if (endPiece) {
             endPiece.setCaptured();
         }
+
+        this.completedMoves.addToTail(new Move(this.currentPlayer, board[startRow][startCol], board[endRow][endCol]));
         board[endRow][endCol].setPiece(startPiece);
         board[startRow][startCol].setPiece(null);
         Screen.setGrid(startRow, startCol, ' ');
         let symbol = startPiece.getSymbol();
-        symbol = startPiece.isWhite ? symbol.toUpperCase() : symbol;
+        symbol = startPiece.isWhite() ? String.fromCharCode(Screen.whitePieces[symbol]) : String.fromCharCode(Screen.blackPieces[symbol]);
         Screen.setGrid(endRow, endCol, symbol);
 
 
@@ -108,6 +111,7 @@ class Game {
 
         // this.playerTurn = this.playerTurn === 'X' ? 'O' : 'X';
         // Screen.setMessage(`Player ${this.playerTurn}'s turn`);
+        // Screen.setMessage(this.completedMoves)
         Screen.render();
     }
 
@@ -177,7 +181,7 @@ class Game {
     }
     
     validMoves(piece, square) {
-        let moves = new MovesList();
+        let moves = new AvailableMovesList();
         let board = this.gameBoard.board
 
         for (let row = 0; row < board.length; row++) {

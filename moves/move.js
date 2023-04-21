@@ -1,8 +1,9 @@
 class Move {
-    constructor(player, start, end) {
+    constructor(player, start, end, boardState) {
         this.player = player;
         this.start = start;
         this.end = end;
+        this.boardState = boardState;
         this.pieceMoved = start.getPiece();
         this.pieceCaptured = end.getPiece();
         this.isCastlingMove = false;

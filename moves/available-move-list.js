@@ -5,7 +5,7 @@ class Node {
     }
 }
 
-class MovesList {
+class AvailableMovesList {
     constructor() {
         this.head = null;
         this.tail = null;
@@ -30,7 +30,7 @@ class MovesList {
     }
 }
 
-// const l = new MovesList();
+// const l = new AvailableMovesList();
 
 // l.addToTail(1)
 // l.addToTail(2)
@@ -39,4 +39,7 @@ class MovesList {
 
 // console.log(l)
 
-module.exports = MovesList;
+module.exports = {
+    AvailableMovesList,
+    Node
+};
