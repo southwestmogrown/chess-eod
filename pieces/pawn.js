@@ -15,25 +15,10 @@ class Pawn extends Piece {
         this.firstMove = !this.firstMove;
     }
 
-    // Moved to Piece definition and refactored for other classes to use
-    // _findPositions(start, end) {
-    //     return {
-    //         startX: start.getX(),
-    //         startY: start.getY(),
-    //         endX: end.getX(),
-    //         endY: end.getY(),
-    //     }
-    // }
-
-    // _checkPieceColor(board, endX, endY) {
-    //     const endPiece = board[endX][endY].piece;
-
-    //     return endPiece && endPiece.white === this.white
-    // }
-
     canMove(board, start, end) {
 
         const { startX, startY, endX, endY } = this.findPositions(start, end);
+        console.log({startX})
         if (this.checkPieceColor(board, endX, endY)) return false;
 
         const endPiece = board[endX][endY].piece;
@@ -47,9 +32,11 @@ class Pawn extends Piece {
             [startX + 1, startY],
         ];
 
-        if (this.white) {
+        if (this.isWhite()) {
             let [move1, move2] = wMoves;
-            if (this.firstMove){
+            console.log({move1})
+            console.log({move2})
+            if (this.getFirstMove()) {
                 if ((move1[0] === endX && move1[1] === endY) ||
                     (move2[0] === endX && move2[1] === endY) &&
                     !endPiece) {
@@ -60,12 +47,14 @@ class Pawn extends Piece {
                     return true;
                 }
             }
-        } else {
+        } else if (!this.isWhite()) {
             let [move1, move2] = bMoves;
-            if (this.firstMove){
+            console.log({move1});
+            console.log({move2});
+            if (this.getFirstMove()){
                 if ((move1[0] === endX && move1[1] === endY) ||
-                (move2[0] === endX && move2[1] === endY) &&
-                !endPiece) {
+                    (move2[0] === endX && move2[1] === endY) &&
+                    !endPiece) {
                     return true;
                 }
             } else {

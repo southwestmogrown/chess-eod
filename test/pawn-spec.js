@@ -299,5 +299,52 @@ describe('The Pawn class', () => {
         });
     });
 
+    describe('the canMove() method with actual gameBoard', () => {
+        context('the pawn has not moved yet', () => {
+            it('should allow a white pawn to move forward 2 spaces', () => {
+                const board = b.generateBoard();
+                const whitePawn = board[6][3].getPiece();
+                const blackPawn = board[1][3].getPiece();
+    
+                /*
+                        [
+                        ['r','n','b','k','q','b','n','r'],
+                        ['p','p','p','p','p','p','p','p'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['P','P','P','P','P','P','P','P'],
+                        ['R','N','B','K','Q','B','N','R'],
+                        ]
+                    */
+    
+                expect(whitePawn.canMove(board, board[6][3], board[4][3])).to.be.true;
+            });
+
+            it('should allow a black pawn to move forward 2 spaces', () => {
+                const board = b.generateBoard();
+                const whitePawn = board[6][3].getPiece();
+                const blackPawn = board[1][3].getPiece();
+    
+                /*
+                        [
+                        ['r','n','b','k','q','b','n','r'],
+                        ['p','p','p','p','p','p','p','p'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['.','.','.','.','.','.','.','.'],
+                        ['P','P','P','P','P','P','P','P'],
+                        ['R','N','B','K','Q','B','N','R'],
+                        ]
+                    */
+    
+                expect(blackPawn.canMove(board, board[1][3], board[3][3])).to.be.true;
+            });
+
+        });
+    })
+
 
 });

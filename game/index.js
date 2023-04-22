@@ -151,20 +151,19 @@ class Game {
             } else {
                 
                 const movesList = this.validMoves(piece, square);
-    
                 if (!movesList.length) {
                     Screen.setMessage("Cannot move this piece");
                     Screen.render();
                 } else {
                     this.startingPosition = [cRow, cCol];
-                    this.chooseMove(movesList)
+                    this.chooseMove(movesList, piece)
                 }
                 
             }
         }
     }
 
-    chooseMove(movesList) {
+    chooseMove(movesList, piece) {
         
         let curr = movesList.head;
         let count = 1;
@@ -176,7 +175,9 @@ class Game {
             count++;
         }
         this.cursor.setIsMoveSelection();
-        Screen.setMessage('Where would you like to move?')
+        // Screen.setMessage(piece.getFirstMove());
+
+        // Screen.setMessage('Where would you like to move?')
         Screen.render();
     }
     
@@ -187,6 +188,9 @@ class Game {
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[0].length; col++) {
                 if (piece.canMove(board, square, board[row][col])) {
+                    setTimeout(() => {
+                        Screen.setMessage([row, col]);
+                    }, 5000)
                     moves.addToTail([row, col]);
                 }
             }
