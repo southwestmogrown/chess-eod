@@ -44,14 +44,14 @@ describe('The Board Class', () => {
             expectedBoard[0][6] = new Square(0, 6, new Knight());
             expectedBoard[0][7] = new Square(0, 7, new Rook());
 
-            expectedBoard[1][0] = new Square(0, 0, new Pawn());
-            expectedBoard[1][1] = new Square(0, 1, new Pawn());
-            expectedBoard[1][2] = new Square(0, 2, new Pawn());
-            expectedBoard[1][3] = new Square(0, 3, new Pawn());
-            expectedBoard[1][4] = new Square(0, 4, new Pawn());
-            expectedBoard[1][5] = new Square(0, 5, new Pawn());
-            expectedBoard[1][6] = new Square(0, 6, new Pawn());
-            expectedBoard[1][7] = new Square(0, 7, new Pawn());
+            expectedBoard[1][0] = new Square(1, 0, new Pawn());
+            expectedBoard[1][1] = new Square(1, 1, new Pawn());
+            expectedBoard[1][2] = new Square(1, 2, new Pawn());
+            expectedBoard[1][3] = new Square(1, 3, new Pawn());
+            expectedBoard[1][4] = new Square(1, 4, new Pawn());
+            expectedBoard[1][5] = new Square(1, 5, new Pawn());
+            expectedBoard[1][6] = new Square(1, 6, new Pawn());
+            expectedBoard[1][7] = new Square(1, 7, new Pawn());
 
             for (let row = 2; row < 6; row++) {
                 for (let col = 0; col < 8; col++) {

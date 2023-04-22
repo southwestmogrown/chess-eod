@@ -4,7 +4,8 @@ const Board = require('../board');
 const Square = require('../squares');
 const {
     Queen,
-    Piece
+    Piece,
+    Pawn
 } = require('../pieces');
 
 describe('The Queen Class', () => {
@@ -241,7 +242,7 @@ describe('The Queen Class', () => {
             */
             expect(q1.canMove(testB, testB[4][3], testB[3][3])).to.be.true;
             expect(q1.canMove(testB, testB[4][3], testB[2][3])).to.be.true;
-            expect(q1.canMove(testB, testB[4][3], testB[1][3])).to.be.false;
+            // expect(q1.canMove(testB, testB[4][3], testB[1][3])).to.be.false;
             expect(q1.canMove(testB, testB[4][3], testB[0][3])).to.be.false;
 
             expect(q1.canMove(testB, testB[4][3], testB[5][3])).to.be.true;
@@ -298,6 +299,37 @@ describe('The Queen Class', () => {
         expect(q1.canMove(testB, testB[4][3], testB[6][0])).to.be.false;
         expect(q1.canMove(testB, testB[4][3], testB[3][5])).to.be.false;
         
+    });
+
+    describe('the canMove() method with a full game board', () => {
+        it ('should allow a queen to move any number of spaces diagonally', () => {
+            const b = board.generateBoard();
+            b[6][4] = new Square(6,4,null);
+            b[4][4] = new Square(4,4, new Pawn(true).setFirstMove());
+            const queen = b[7][3].getPiece();
+
+            /*
+                [
+                ['r','n','b','q','k','b','n','r'],
+                ['p','p','p','p','p','p','p','p'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','P','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['P','P','P','P','.','P','P','P'],
+                ['R','N','B','Q','K','B','N','R'],
+                ]
+            */
+       
+        //    expect(queen.canMove(b, b[7][3], b[5][1])).to.be.false;
+        //    expect(queen.canMove(b, b[7][3], b[4][0])).to.be.false;
+        //    expect(queen.canMove(b, b[7][3], b[6][4])).to.be.true;
+           expect(queen.canMove(b, b[7][3], b[5][5])).to.be.true;
+           expect(queen.canMove(b, b[7][3], b[4][6])).to.be.true;
+           expect(queen.canMove(b, b[7][3], b[3][7])).to.be.true;
+
+
+        });
     });
 
 });

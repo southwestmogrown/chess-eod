@@ -4,7 +4,8 @@ const Board = require('../board');
 
 const {
     Bishop,
-    Piece
+    Piece, 
+    Pawn
 } = require('../pieces');
 
 const Square = require('../squares');
@@ -173,5 +174,31 @@ describe('The Bishop class', () => {
 
         });
         
+    });
+
+    describe('the canMove() method with a full game board', () => {
+        it ('should allow a bishop to move any number of spaces diagonally', () => {
+            const b = board.generateBoard();
+            b[6][3] = new Square(6,3,null);
+            b[4][3] = new Square(4,3, new Pawn(true).setFirstMove());
+            const bishop = b[7][2].getPiece();
+            /*
+                [
+                ['r','n','b','k','q','b','n','r'],
+                ['p','p','p','p','p','p','p','p'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','P','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['P','P','P','.','P','P','P','P'],
+                ['R','N','B','K','Q','B','N','R'],
+                ]
+            */
+        //    expect(bishop.canMove(b, b[7][2], b[6][3])).to.be.true;
+        //    expect(bishop.canMove(b, b[7][2], b[5][4])).to.be.true;
+           expect(bishop.canMove(b, b[7][2], b[4][5])).to.be.true;
+
+
+        });
     });
 });

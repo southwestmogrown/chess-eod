@@ -44,6 +44,45 @@ class Piece {
     canMove(board, start, end) {
 
     }
+
+    _upLeft(startX, startY, endX, endY, board) {
+        while (startX > endX && startY > endY) {
+            if (board[startX][startY].getPiece()) return false;
+            startX--;
+            startY--;
+        }
+
+        return true;
+    }
+
+    _upRight(startX, startY, endX, endY, board) {
+
+        while (startX > endX && startY < endY) {
+            
+            if (board[startX][startY].getPiece()) return false;
+            startX--;
+            startY++;
+        }
+        return true;
+    }
+
+    _downLeft(startX, startY, endX, endY, board) {
+        while (startX < endX && startY > endY) {
+            if (board[startX][startY].getPiece()) return false;
+            startX++;
+            startY--;
+        }
+        return true;
+    }
+
+    _downRight(startX, startY, endX, endY, board) {
+        while (startX < endX && startY < endY) {
+            if (board[startX][startY].getPiece()) return false;
+            startX++;
+            startY++;
+        }
+        return true;
+    }
 }
 
 module.exports = Piece;

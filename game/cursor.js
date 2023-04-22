@@ -47,7 +47,6 @@ class Cursor {
         this.row = this.currentMove.val[0];
         this.col = this.currentMove.val[1];
         Screen.setBackgroundColor(this.row, this.col, this.cursorColor);
-        Screen.setMessage(this.currentMove)
         this.currentMove = this.currentMove.next;
 
         Screen.render();

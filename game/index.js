@@ -92,6 +92,10 @@ class Game {
             endPiece.setCaptured();
         }
 
+        if (startPiece.getSymbol() === 'p' && startPiece.getFirstMove()) {
+            startPiece.setFirstMove();
+        }
+
         this.completedMoves.addToTail(new Move(this.currentPlayer, board[startRow][startCol], board[endRow][endCol]));
         board[endRow][endCol].setPiece(startPiece);
         board[startRow][startCol].setPiece(null);
@@ -175,9 +179,8 @@ class Game {
             count++;
         }
         this.cursor.setIsMoveSelection();
-        // Screen.setMessage(piece.getFirstMove());
 
-        // Screen.setMessage('Where would you like to move?')
+        Screen.setMessage('Where would you like to move?')
         Screen.render();
     }
     
@@ -187,10 +190,12 @@ class Game {
 
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[0].length; col++) {
+                if (piece.symbol === 'q') {
+                    // if (piece.canMoveDiagonal(board, square, board[row][col])) {
+                    //     moves.addToTail([row, col]);
+                    // }
+                }
                 if (piece.canMove(board, square, board[row][col])) {
-                    setTimeout(() => {
-                        Screen.setMessage([row, col]);
-                    }, 5000)
                     moves.addToTail([row, col]);
                 }
             }

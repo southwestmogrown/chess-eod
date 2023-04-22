@@ -18,7 +18,6 @@ class Pawn extends Piece {
     canMove(board, start, end) {
 
         const { startX, startY, endX, endY } = this.findPositions(start, end);
-        console.log({startX})
         if (this.checkPieceColor(board, endX, endY)) return false;
 
         const endPiece = board[endX][endY].piece;
@@ -34,8 +33,6 @@ class Pawn extends Piece {
 
         if (this.isWhite()) {
             let [move1, move2] = wMoves;
-            console.log({move1})
-            console.log({move2})
             if (this.getFirstMove()) {
                 if ((move1[0] === endX && move1[1] === endY) ||
                     (move2[0] === endX && move2[1] === endY) &&
@@ -49,8 +46,6 @@ class Pawn extends Piece {
             }
         } else if (!this.isWhite()) {
             let [move1, move2] = bMoves;
-            console.log({move1});
-            console.log({move2});
             if (this.getFirstMove()){
                 if ((move1[0] === endX && move1[1] === endY) ||
                     (move2[0] === endX && move2[1] === endY) &&

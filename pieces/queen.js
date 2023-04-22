@@ -6,12 +6,7 @@ class Queen extends Piece {
         this.symbol = 'q';
     }
 
-    canMove(board, start, end) {
-        const { startX, startY, endX, endY } = this.findPositions(start, end);
-        if (this.checkPieceColor(board, endX, endY)) return false;
-
-        if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
-        // up
+    _checkOrthogonal(board, startX, endX, startY, endY) {
         for (let row = startX; row > endX + 1; row--) {
             if (board[row - 1][startY].getPiece()) return false;
         }
@@ -31,36 +26,47 @@ class Queen extends Piece {
             if (board[startX][col + 1].getPiece()) return false;
         }
 
+        return true;
+    }
+
+    _checkDiagonal(board, startX, startY, endX, endY) {
+        if (Math.abs(startX - endX) !== Math.abs(startY - endY)) return false;
+        
         // up/left
-        for (let row = startX; row > endX + 1; row--) {
-            for (let col = startY; col > endY + 1; col--) {
-                if (board[row - 1][col - 1].getPiece()) return false;
-            }
-        }
+        if (!this._upLeft(startX - 1, startY - 1, endX, endY, board)) return false;
 
         // up/right
-        for (let row = startX; row > endX + 1; row--) {
-            for (let col = startY; col < endY - 1; col++) {
-                if (board[row - 1][col + 1].getPiece()) return false;
-            }
-        }
+
+        if (!this._upRight(startX - 1, startY + 1, endX, endY, board)) return false;
 
         // down/left
-        for (let row = startX; row < endX - 1; row++) {
-            for (let col = startY; col > endY + 1; col--) {
-                if (board[row + 1][col - 1].getPiece()) return false;
-            }
-        }
+
+        if (!this._downLeft(startX + 1, startY - 1, endX, endY, board)) return false;
 
         // down/right
-        for (let row = startX; row < endX - 1; row++) {
-            for (let col = startY; col < endY - 1; col++) {
-                if (board[row + 1][col + 1].getPiece()) return false;
-            }
-        }
+
+        if (!this._downRight(startX + 1, startY + 1, endX, endY, board)) return false;
 
         return true;
     }
+
+    canMove(board, start, end) {
+        const { startX, startY, endX, endY } = this.findPositions(start, end);
+        if (this.checkPieceColor(board, endX, endY)) return false;
+
+        if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
+       
+        return this._checkDiagonal(board, startX, startY, endX, endY) || this._checkOrthogonal(board, startX, endX, startY, endY)
+    }
+
+    // canMoveDiagonal(board, start, end) {
+    //     const { startX, startY, endX, endY } = this.findPositions(start, end);
+    //     if (this.checkPieceColor(board, endX, endY)) return false;
+
+    //     if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
+       
+    //     return this._checkDiagonal(board, startX, endX, startY, endY);
+    // }
 }
 
 module.exports = Queen;
