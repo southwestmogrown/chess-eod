@@ -330,6 +330,39 @@ describe('The Queen Class', () => {
 
 
         });
+
+        it ('should allow a queen to move any number of spaces diagonally', () => {
+            const b = board.generateBoard();
+            b[6][4] = new Square(6,4,null);
+            b[4][4] = new Square(4,4, new Pawn(true));
+            b[6][3] = new Square(6, 3, null);
+            b[4][3] = new Square(4, 3, new Pawn(true));
+            b[7][3] = new Square(7, 3, null);
+            b[5][5] = new Square(5, 5, q1);
+            const queen = b[5][5].getPiece();
+
+            /*
+                [
+                ['r','n','b','q','k','b','n','r'],
+                ['p','p','p','p','p','p','p','p'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','P','P','.','.','.'],
+                ['.','.','.','.','.','Q','.','.'],
+                ['P','P','P','.','.','P','P','P'],
+                ['R','N','B','.','K','B','N','R'],
+                ]
+            */
+       
+           expect(queen.canMove(b, b[5][5], b[4][4])).to.be.false;
+           expect(queen.canMove(b, b[5][5], b[3][3])).to.be.false;
+        //    expect(queen.canMove(b, b[7][3], b[6][4])).to.be.true;
+        //    expect(queen.canMove(b, b[7][3], b[5][5])).to.be.true;
+        //    expect(queen.canMove(b, b[7][3], b[4][6])).to.be.true;
+        //    expect(queen.canMove(b, b[7][3], b[3][7])).to.be.true;
+
+
+        });
     });
 
 });

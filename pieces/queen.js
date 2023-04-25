@@ -7,6 +7,8 @@ class Queen extends Piece {
     }
 
     _checkOrthogonal(board, startX, endX, startY, endY) {
+        if ((startX !== endX) && (startY !== endY)) return false;
+
         for (let row = startX; row > endX + 1; row--) {
             if (board[row - 1][startY].getPiece()) return false;
         }
@@ -31,6 +33,7 @@ class Queen extends Piece {
 
     _checkDiagonal(board, startX, startY, endX, endY) {
         if (Math.abs(startX - endX) !== Math.abs(startY - endY)) return false;
+        if (this.checkPieceColor(board, endX, endY)) return false;
         
         // up/left
         if (!this._upLeft(startX - 1, startY - 1, endX, endY, board)) return false;
@@ -54,19 +57,10 @@ class Queen extends Piece {
         const { startX, startY, endX, endY } = this.findPositions(start, end);
         if (this.checkPieceColor(board, endX, endY)) return false;
 
-        if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
        
         return this._checkDiagonal(board, startX, startY, endX, endY) || this._checkOrthogonal(board, startX, endX, startY, endY)
     }
 
-    // canMoveDiagonal(board, start, end) {
-    //     const { startX, startY, endX, endY } = this.findPositions(start, end);
-    //     if (this.checkPieceColor(board, endX, endY)) return false;
-
-    //     if (!(Math.abs(startX - endX) === Math.abs(startY - endY) || ((startX === endX) || (startY === endY)))) return false
-       
-    //     return this._checkDiagonal(board, startX, endX, startY, endY);
-    // }
 }
 
 module.exports = Queen;

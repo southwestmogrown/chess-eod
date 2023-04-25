@@ -46,8 +46,12 @@ class Piece {
     }
 
     _upLeft(startX, startY, endX, endY, board) {
+        
         while (startX > endX && startY > endY) {
-            if (board[startX][startY].getPiece()) return false;
+
+            if (board[startX][startY].getPiece()) {
+                return false
+            };
             startX--;
             startY--;
         }
@@ -67,6 +71,7 @@ class Piece {
     }
 
     _downLeft(startX, startY, endX, endY, board) {
+
         while (startX < endX && startY > endY) {
             if (board[startX][startY].getPiece()) return false;
             startX++;
@@ -76,6 +81,7 @@ class Piece {
     }
 
     _downRight(startX, startY, endX, endY, board) {
+
         while (startX < endX && startY < endY) {
             if (board[startX][startY].getPiece()) return false;
             startX++;
