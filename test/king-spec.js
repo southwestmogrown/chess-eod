@@ -4,7 +4,8 @@ const Square = require('../squares');
 const Board = require('../board');
 const {
     Piece,
-    King
+    King,
+    Pawn
 } = require('../pieces');
 
 describe('The King class', () => {
@@ -149,8 +150,8 @@ describe('The King class', () => {
             const testB = b.generateTestBoard();
             // add pieces to the desired location
             testB[3][4] = new Square(3,4,k2);
-            testB[3][5] = new Square(3,5,p);
-            testB[1][3] = new Square(1,3,p)
+            testB[3][5] = new Square(3,5, new Pawn());
+            testB[1][3] = new Square(1,3, new Pawn())
             /*
                [
                 ['.','.','.','.','.','.','.','.'],
@@ -163,8 +164,8 @@ describe('The King class', () => {
                 ['.','.','.','.','.','.','.','.'],
                ]
             */
-               expect(k1.canMove(testB, testB[3][4], testB[2][4])).to.be.false;
-               expect(k1.canMove(testB, testB[3][4], testB[4][4])).to.be.false;
+               expect(k2.canMove(testB, testB[3][4], testB[2][4])).to.be.false;
+               expect(k2.canMove(testB, testB[3][4], testB[4][4])).to.be.false;
         });
     });
 
