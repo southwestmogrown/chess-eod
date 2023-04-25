@@ -141,6 +141,31 @@ describe('The King class', () => {
                expect(k1.canMove(testB, testB[3][4], testB[3][5])).to.be.false;
                expect(k1.canMove(testB, testB[3][4], testB[2][4])).to.be.false;
         });
+
+        it('should not allow the king to move into a check position', () => {
+            let p = new Piece();
+            const b = new Board();
+            // create a new board for testing
+            const testB = b.generateTestBoard();
+            // add pieces to the desired location
+            testB[3][4] = new Square(3,4,k2);
+            testB[3][5] = new Square(3,5,p);
+            testB[1][3] = new Square(1,3,p)
+            /*
+               [
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','p','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','K','p','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+                ['.','.','.','.','.','.','.','.'],
+               ]
+            */
+               expect(k1.canMove(testB, testB[3][4], testB[2][4])).to.be.false;
+               expect(k1.canMove(testB, testB[3][4], testB[4][4])).to.be.false;
+        });
     });
 
 

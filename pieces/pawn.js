@@ -86,38 +86,38 @@ class Pawn extends Piece {
         return false;
     }
 
-    // canAttack(board, start, end) {
-    //     const { startX, startY, endX, endY } = this.findPositions(start, end);
+    canAttack(board, start, end) {
+        const { startX, startY, endX, endY } = this.findPositions(start, end);
 
-    //     if (this.checkPieceColor(board, endX, endY)) return false;
+        if (this.checkPieceColor(board, endX, endY)) return false;
 
-    //     const endPiece = board[endX][endY].piece;
+        const endPiece = board[endX][endY].piece;
 
-    //     const wDiagonalMoves = [
-    //         [startX - 1, startY - 1],
-    //         [startX - 1, startY + 1],
-    //     ];
+        const wDiagonalMoves = [
+            [startX - 1, startY - 1],
+            [startX - 1, startY + 1],
+        ];
 
-    //     const bDiagonalMoves = [
-    //         [startX + 1, startY - 1],
-    //         [startX + 1, startY + 1],
-    //     ];
+        const bDiagonalMoves = [
+            [startX + 1, startY - 1],
+            [startX + 1, startY + 1],
+        ];
 
-    //     if (this.white) {
-    //         for (let move of wDiagonalMoves) {
-    //             if (move[0] === endX && move[1] === endY && endPiece) {
-    //                 return true;
-    //             }
-    //         }
-    //     } else {
-    //         for (let move of bDiagonalMoves) {
-    //             if (move[0] === endX && move[1] === endY && endPiece) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
+        if (this.white) {
+            for (let move of wDiagonalMoves) {
+                if (move[0] === endX && move[1] === endY) {
+                    return true;
+                }
+            }
+        } else {
+            for (let move of bDiagonalMoves) {
+                if (move[0] === endX && move[1] === endY) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }
 

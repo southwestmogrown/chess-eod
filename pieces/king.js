@@ -15,17 +15,37 @@ class King extends Piece {
         this.castlingDone = !this.castlingDone;
     }
 
+    _wouldBeCheck(board, end) {
+
+        // const visited = new Set();
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                
+                let piece = board[row][col].getPiece();
+                if (piece && piece.getSymbol() !== 'k') {
+                    if (piece.isWhite() === this.isWhite()) {
+                        continue;
+                    }
+                    if (piece.getSymbol() === 'p') {
+                        if (piece.canAttack(board, board[row][col], end)) {
+                            return true;
+                        }
+                    }
+                    if (piece.canMove(board, board[row][col], end)) {
+                        return true;
+                    }
+                } 
+                
+            }
+        }
+        return false;
+    }
+
     canMove(board, start, end) {
-        
-        // Moved to Piece class definition
-        // const startX = start.getX();
-        // const startY = start.getY();
-        // const endX = end.getX();
-        // const endY = end.getY();
-        // const endPiece = board[endX][endY].piece;
 
         const { startX, startY, endX, endY } = this.findPositions(start, end);
         if (this.checkPieceColor(board, endX, endY)) return false;
+        if (this._wouldBeCheck(board, end)) return false;
         
         const moves = [
             [startX + 1, startY],

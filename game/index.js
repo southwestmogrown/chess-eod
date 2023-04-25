@@ -88,14 +88,17 @@ class Game {
         const endPiece = board[endRow][endCol].getPiece();
         const startPiece = board[startRow][startCol].getPiece();
 
+        this.currentPlayer = this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
+        this.cursor.setIsMoveSelection();
+        
         if (endPiece) {
             endPiece.setCaptured();
         }
-
+        
         if (startPiece.getSymbol() === 'p' && startPiece.getFirstMove()) {
             startPiece.setFirstMove();
         }
-
+        
         this.completedMoves.addToTail(new Move(this.currentPlayer, board[startRow][startCol], board[endRow][endCol]));
         board[endRow][endCol].setPiece(startPiece);
         board[startRow][startCol].setPiece(null);
@@ -103,19 +106,22 @@ class Game {
         let symbol = startPiece.getSymbol();
         symbol = startPiece.isWhite() ? String.fromCharCode(Screen.whitePieces[symbol]) : String.fromCharCode(Screen.blackPieces[symbol]);
         Screen.setGrid(endRow, endCol, symbol);
-
-
-
-        // Screen.setMessage(piece)
-        // this.grid[row][col] = this.playerTurn;
-        // Screen.setGrid(row, col, this.playerTurn);
-
+        
+        
         // let winner = TTT.checkWin(this.grid);
         // if (winner) return TTT.endGame(winner);
 
-        // this.playerTurn = this.playerTurn === 'X' ? 'O' : 'X';
-        // Screen.setMessage(`Player ${this.playerTurn}'s turn`);
-        // Screen.setMessage(this.completedMoves)
+        // check for check
+
+        // check for checkmate
+
+        // check for castling move
+
+        // check for promotion
+        
+        this._resetBackground(endRow, endCol);
+
+        Screen.setMessage(`${this.currentPlayer.name}'s move!`);
         Screen.render();
     }
 
@@ -136,11 +142,7 @@ class Game {
         if (this.cursor.getIsMoveSelection()) {
             
             this.doMove([cRow, cCol]);
-            this.currentPlayer = this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
-            this.cursor.setIsMoveSelection();
-            this._resetBackground(cRow, cCol);
-            Screen.setMessage(`${this.currentPlayer.name}'s move!`);
-            Screen.render();
+            
         } else {
     
             this._resetBackground(cRow, cCol);
@@ -190,11 +192,6 @@ class Game {
 
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[0].length; col++) {
-                if (piece.symbol === 'q') {
-                    // if (piece.canMoveDiagonal(board, square, board[row][col])) {
-                    //     moves.addToTail([row, col]);
-                    // }
-                }
                 if (piece.canMove(board, square, board[row][col])) {
                     moves.addToTail([row, col]);
                 }
