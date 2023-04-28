@@ -1,5 +1,6 @@
 const keypress = require('keypress');
 const Command = require('./command');
+const CaptureTable = require('../captures');
 
 class Screen {
 
@@ -44,6 +45,8 @@ class Screen {
     static keypressCallback = null;
 
     static initialized = false;
+
+    static captures = new CaptureTable();
 
     static initialize(numRows = 8, numCols = 8, board) {
         Screen.numRows = numRows;
@@ -101,20 +104,11 @@ class Screen {
 
     static quit(showMessage=true) {
         if (showMessage) {
-            //!!START SILENT
-            console.log(Screen.quitMessage);                // #1 of 13
-            //!!END
-            //!!ADD
-            // // console.log(Screen.quitMessage);              // #1 of 13
-            //!!END_ADD
+            console.log(Screen.quitMessage);
         };
 
-        //!!START SILENT
-        process.exit(1);                                    // #2 of 13
-        //!!END
-        //!!ADD
-        // // process.exit(1);                                  // #2 of 13
-        //!!END_ADD
+        process.exit(1); 
+        
     }
 
     static setAvailableMoves(moves) {
@@ -160,23 +154,17 @@ class Screen {
 
         const spacer = new Array(Screen.spacerCount).fill(' ').join('');
 
-        //!!START SILENT
-        console.clear();                                    // #3 of 13
-        //!!END
-        //!!ADD
-        // // console.clear();                                  // #3 of 13
-        //!!END_ADD
+        console.clear();
+        
 
         let borderLength = Screen.numCols * (Screen.spacerCount * 2 + 1) + 2;
         if (Screen.gridLines) borderLength += Screen.numCols - 1;
         let horizontalBorder = new Array(borderLength).fill(Screen.borderChar).join('');
 
-        //!!START SILENT
-        console.log(horizontalBorder);                      // #4 of 13
-        //!!END
-        //!!ADD
-        // // console.log(horizontalBorder);                    // #4 of 13
-        //!!END_ADD
+        console.log(Screen.captures.getWhiteCaptures().join(' '))
+        console.log(horizontalBorder);
+
+
 
         for (let row = 0 ; row < Screen.numRows ; row++) {
 
@@ -197,39 +185,26 @@ class Screen {
                 horizontalGridLine.unshift(`${Screen.borderChar}${Screen.defaultBackgroundColor}`);
                 horizontalGridLine.push(`\x1b[0m${Screen.borderChar}`);
 
-                //!!START SILENT
-                console.log(horizontalGridLine.join(''));   // #5 of 13
-                //!!END
-                //!!ADD
-                // // console.log(horizontalGridLine.join('')); // #5 of 13
-                //!!END_ADD
+                console.log(horizontalGridLine.join(''));
+                
             }
 
             rowCopy.unshift(`${Screen.borderChar}`);
             rowCopy.push(`${Screen.borderChar}`);
 
-            //!!START SILENT
-            console.log(rowCopy.join(''));                  // #6 of 13
-            //!!END
-            //!!ADD
-            // // console.log(rowCopy.join(''));                // #6 of 13
-            //!!END_ADD
+            console.log(rowCopy.join(''));
+            
         }
 
-        //!!START SILENT
-        console.log(horizontalBorder);                      // #7 of 13
+        console.log(horizontalBorder);
 
-        console.log("");                                    // #8 of 13
+        console.log(Screen.captures.getBlackCaptures().join(' '))
+        
+        console.log("");
 
-        console.log(Screen.message);                        // #9 of 13
-        //!!END
-        //!!ADD
-        // // console.log(horizontalBorder);                    // #7 of 13
 
-        // // console.log("");                                  // #8 of 13
-
-        // // console.log(Screen.message);                      // #9 of 13
-        //!!END_ADD
+        console.log(Screen.message);
+        
     }
 
     static setQuitMessage(quitMessage) {
@@ -262,24 +237,16 @@ class Screen {
 
     static printCommands() {
 
-        //!!START SILENT
-        console.log('');                                    // #10 of 13
-        //!!END
-        //!!ADD
-        // // console.log('');                                  // #10 of 13
-        //!!END_ADD
+        console.log('');
+        
 
         for (let cmd in Screen.commands) {
             let description = Screen.commands[cmd].description;
             console.log(`  ${cmd} - ${description}`);
         }
 
-        //!!START SILENT
-        console.log('');                                    // #11 of 13
-        //!!END
-        //!!ADD
-        // // console.log('');                                  // #11 of 13
-        //!!END_ADD
+        console.log('');
+        
     }
 
     static waitForInput() {
@@ -288,20 +255,12 @@ class Screen {
         process.stdin.on('keypress', function (ch, key) {
 
             if (!key) {
-                //!!START SILENT
-                console.log("Warning: Unknown keypress");   // #12 of 13
-                //!!END
-                //!!ADD
-                // // console.log("Warning: Unknown keypress");     // #12 of 13
-                //!!END_ADD
+                console.log("Warning: Unknown keypress");
+                
             } else if (!Screen.commands.hasOwnProperty(key.name)) {
                 Screen.render();
-                //!!START SILENT
-                console.log(`${key.name} not supported.`);   // #13 of 13
-                //!!END
-                //!!ADD
-                // // console.log(`${key.name} not supported.`);    // #13 of 13
-                //!!END_ADD
+                console.log(`${key.name} not supported.`);
+                
                 Screen.printCommands();
             } else {
                 Screen.render();

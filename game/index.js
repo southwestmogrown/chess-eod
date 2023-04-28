@@ -65,18 +65,14 @@ class Game {
         }, 500)
     }
 
-    static checkWin(grid) {
-        
+    static checkWin(endPiece, currentPlayer) {
+        if (endPiece.getSymbol() === 'k') {
+            Game.endGame(currentPlayer)
+        }
     }
 
     static endGame(winner) {
-        if (winner === 'O' || winner === 'X') {
-            Screen.setMessage(`Player ${winner} wins!`);
-        } else if (winner === 'T') {
-            Screen.setMessage(`Tie game!`);
-        } else {
-            Screen.setMessage(`Game Over`);
-        }
+        Screen.setMessage(`${winner.name} wins!`);
         Screen.render();
         Screen.quit();
     }
@@ -88,11 +84,15 @@ class Game {
         const endPiece = board[endRow][endCol].getPiece();
         const startPiece = board[startRow][startCol].getPiece();
 
-        this.currentPlayer = this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
-        this.cursor.setIsMoveSelection();
         
         if (endPiece) {
+            Game.checkWin(endPiece, this.currentPlayer)
             endPiece.setCaptured();
+            if (endPiece.isWhite()) {
+                Screen.captures.addWhiteCapture(String.fromCharCode(Screen.whitePieces[endPiece.getSymbol()]));
+            } else {
+                Screen.captures.addBlackCapture(String.fromCharCode(Screen.blackPieces[endPiece.getSymbol()]));
+            }
         }
         
         if (startPiece.getSymbol() === 'p' && startPiece.getFirstMove()) {
@@ -100,6 +100,8 @@ class Game {
         }
         
         this.completedMoves.addToTail(new Move(this.currentPlayer, board[startRow][startCol], board[endRow][endCol]));
+        this.currentPlayer = this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
+        this.cursor.setIsMoveSelection();
         board[endRow][endCol].setPiece(startPiece);
         board[startRow][startCol].setPiece(null);
         Screen.setGrid(startRow, startCol, ' ');
