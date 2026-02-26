@@ -378,8 +378,8 @@ class Game {
       return;
     }
 
-  // STARTER TODO (Week 1): Replace this direct call with a mockable seam
-  // in tests so students can practice dependency isolation.
+    // STARTER TODO (Week 1): Replace this direct call with a mockable seam
+    // in tests so students can practice dependency isolation.
 
     if (this.pendingComputerTurn) {
       return;
