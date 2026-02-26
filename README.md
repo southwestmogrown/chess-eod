@@ -1,38 +1,28 @@
-# Chess 4 Less (Node.js)
+# Chess 4 Less
 
-A terminal-based chess game built in JavaScript with an emphasis on object-oriented design, test-driven development, and educational architecture.
+Chess 4 Less is a polished terminal chess application built with JavaScript and Node.js. The project emphasizes clean object-oriented design, test-driven development, and a readable gameplay experience in the command line.
 
-## Overview
+## Project Highlights
 
-This started as a small learning aid project.
-
-Once I got moving, I had to finish the game.
-
-I got stuck and stepped away from it for a while, but going back through Boot.dev as a refresher gave me the momentum to come back and ship it as one of my project submissions. I hope the educators there enjoy this as much as I enjoyed building it.
-
-This repo is also part of my professional portfolio, so the `main` branch is focused on showcasing a complete, playable application.
-
-## Features
-
-- Playable terminal chess experience
-- Two-player mode (human vs human)
-- Single-player mode (human vs basic AI)
-- Piece movement validation and capture handling
-- Game-end flow (forfeit and king capture)
-- Tested architecture across board, pieces, and game flow
+- Full playable chess loop in the terminal
+- Single-player mode (human vs computer) and two-player mode (human vs human)
+- Check and checkmate enforcement
+- Turn-based input flow with AI “thinking” delay
+- Enhanced terminal presentation (startup splash, board labeling, capture panels)
+- Comprehensive automated test coverage across game flow, board logic, and pieces
 
 ## Demo Screenshots
 
-Add your screenshots at the paths below (or update paths to match your structure).
+You can drop in your screenshots later at the paths below.
 
-![Main menu / startup](assets/screenshots/startup.png)
-![Gameplay board](assets/screenshots/gameplay.png)
-![Single-player mode](assets/screenshots/single-player.png)
-![Captures and endgame](assets/screenshots/endgame.png)
+![Startup screen](assets/screenshots/startup.png)
+![Board during play](assets/screenshots/gameplay.png)
+![Single-player turn flow](assets/screenshots/single-player.png)
+![Endgame state](assets/screenshots/endgame.png)
 
-## Download & Setup
+## Installation
 
-### 1) Clone the repository
+### 1) Clone
 
 ```bash
 git clone <your-repo-url>
@@ -45,43 +35,71 @@ cd chess-eod
 npm install
 ```
 
-### 3) Run the game
+### 3) Start the game
 
 ```bash
 node index.js
 ```
 
-When prompted:
+When prompted for mode:
 
-- Enter `1` for single-player (vs computer)
+- Enter `1` for single-player
 - Enter `2` for two-player
 
-## Running Tests
+## Controls
+
+- `up`, `down`, `left`, `right`: move cursor
+- `return`: select/confirm
+- `f`: forfeit
+- `q`: quit
+
+## Testing
+
+Run the full test suite:
 
 ```bash
 npm test
 ```
 
-## Controls
+Run focused regression checks:
 
-- `up`, `down`, `left`, `right` to move the cursor
-- `return` to select a piece / confirm a move
-- `f` to forfeit
-- `q` to quit
+```bash
+npm run test:regression
+```
 
-## Tech Stack
+## Technologies & Packages
+
+### Runtime
 
 - Node.js
-- Mocha
-- Chai
+- JavaScript (CommonJS modules)
 
-## For Educators / Learners
+### Core Packages
 
-If you want the instructional version with scaffolded exercises and concept-isolated progression, use the `starter` branch.
+- `prompt-sync` for interactive terminal prompts
+- `keypress` for real-time board navigation and command handling
 
-The `starter` branch is designed for learning OOP, TDD, complexity analysis, and data structures in staged milestones.
+### Testing
+
+- `mocha` as the test runner
+- `chai` for assertions
+- `chai-spies` for behavior verification in selected tests
+
+## Architecture Overview
+
+- `game/`: orchestration, cursor flow, screen rendering, command handling
+- `board/`, `squares/`: board and coordinate primitives
+- `pieces/`: piece-specific movement rules (king, queen, rook, bishop, knight, pawn)
+- `players/`: human/computer player models
+- `ai/`: move-ranking and engine behavior for computer turns
+- `moves/`: available/completed move structures
+- `test/`: integration and unit coverage
 
 ## Notes
 
-- The AI is intentionally simple by design.
-- The focus is clarity, architecture, and learning value over chess strength.
+- AI is intentionally lightweight and deterministic-first for clarity and testability.
+- The codebase is structured to support learning, extension, and refactoring.
+
+## Educational Branch
+
+For scaffolded instructional materials and staged exercises, use the `starter` branch.

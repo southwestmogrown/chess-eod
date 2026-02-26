@@ -42,6 +42,131 @@ function loadGameWithPromptResponses(responses) {
 
 describe("The Game Class", () => {
   describe("game flow integration", () => {
+    it("should reprompt until player count is 1 or 2", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "hello",
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+
+      const originalSetTimeout = global.setTimeout;
+      const originalMathRandom = Math.random;
+      const originalInitialize = Screen.initialize;
+      const originalSetGridLines = Screen.setGridLines;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalAddCommand = Screen.addCommand;
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      try {
+        global.setTimeout = (fn) => fn();
+        Math.random = () => 0;
+        Screen.initialize = () => {};
+        Screen.setGridLines = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.addCommand = () => {};
+        Screen.setMessage = () => {};
+        Screen.render = () => {};
+
+        const game = new Game();
+
+        expect(game.isSinglePlayer).to.equal(false);
+        expect(game.p1.name).to.equal("Alice");
+        expect(game.p2.name).to.equal("Bob");
+      } finally {
+        global.setTimeout = originalSetTimeout;
+        Math.random = originalMathRandom;
+        Screen.initialize = originalInitialize;
+        Screen.setGridLines = originalSetGridLines;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
+    it("should accept player count when input has surrounding whitespace", () => {
+      const { Game, restore } = loadGameWithPromptResponses([" 1 ", "Alice"]);
+
+      const originalSetTimeout = global.setTimeout;
+      const originalMathRandom = Math.random;
+      const originalInitialize = Screen.initialize;
+      const originalSetGridLines = Screen.setGridLines;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalAddCommand = Screen.addCommand;
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      try {
+        global.setTimeout = (fn) => fn();
+        Math.random = () => 0;
+        Screen.initialize = () => {};
+        Screen.setGridLines = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.addCommand = () => {};
+        Screen.setMessage = () => {};
+        Screen.render = () => {};
+
+        const game = new Game();
+
+        expect(game.isSinglePlayer).to.equal(true);
+        expect(game.p2.name).to.equal("Computer");
+      } finally {
+        global.setTimeout = originalSetTimeout;
+        Math.random = originalMathRandom;
+        Screen.initialize = originalInitialize;
+        Screen.setGridLines = originalSetGridLines;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
+    it("should start cursor on white side when the human player is white", () => {
+      const { Game, restore } = loadGameWithPromptResponses(["1", "Alice"]);
+
+      const originalSetTimeout = global.setTimeout;
+      const originalMathRandom = Math.random;
+      const originalInitialize = Screen.initialize;
+      const originalSetGridLines = Screen.setGridLines;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalAddCommand = Screen.addCommand;
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      try {
+        global.setTimeout = (fn) => fn();
+        Math.random = () => 0;
+        Screen.initialize = () => {};
+        Screen.setGridLines = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.addCommand = () => {};
+        Screen.setMessage = () => {};
+        Screen.render = () => {};
+
+        const game = new Game();
+
+        expect(game.p1.getIsHuman()).to.equal(true);
+        expect(game.p1.getIsWhiteSide()).to.equal(true);
+        expect(game.cursor.row).to.equal(7);
+        expect(game.cursor.col).to.equal(0);
+      } finally {
+        global.setTimeout = originalSetTimeout;
+        Math.random = originalMathRandom;
+        Screen.initialize = originalInitialize;
+        Screen.setGridLines = originalSetGridLines;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
     it("should start a game and end it through forfeit", () => {
       const { Game, restore } = loadGameWithPromptResponses([
         "2",

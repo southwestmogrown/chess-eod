@@ -19,9 +19,16 @@ class Game {
   constructor() {
     // Mode selection keeps the main game loop reusable while allowing
     // different player strategies (human vs AI) to plug into the same flow.
-    const modeChoice = prompt(
-      "Enter game mode (1 for single-player, 2 for two-player). ",
-    );
+    let modeChoice = String(
+      prompt("Enter game mode (1 for single-player, 2 for two-player). "),
+    ).trim();
+    while (modeChoice !== "1" && modeChoice !== "2") {
+      modeChoice = String(
+        prompt(
+          "Invalid selection. Enter 1 for single-player or 2 for two-player. ",
+        ),
+      ).trim();
+    }
     this.isSinglePlayer = modeChoice === "1";
 
     const p1Name = prompt("Player 1, please enter your name. ");
@@ -58,6 +65,7 @@ class Game {
       this.pendingComputerTurn = null;
 
       this.cursor = new Cursor(8, 8);
+      this._setInitialCursorPosition();
 
       this.startingPosition = null;
 
@@ -407,6 +415,28 @@ class Game {
         Screen.setBackgroundColor(row, col, "black");
       }
     }
+  }
+
+  _setInitialCursorPosition() {
+    if (!this.cursor) {
+      return;
+    }
+
+    const activeHuman =
+      this.currentPlayer &&
+      this.currentPlayer.getIsHuman &&
+      this.currentPlayer.getIsHuman()
+        ? this.currentPlayer
+        : [this.p1, this.p2].find(
+            (player) => player && player.getIsHuman && player.getIsHuman(),
+          );
+
+    if (!activeHuman) {
+      return;
+    }
+
+    this.cursor.row = activeHuman.getIsWhiteSide() ? 7 : 0;
+    this.cursor.col = 0;
   }
 
   _highlightCursor() {
