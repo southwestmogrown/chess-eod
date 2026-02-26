@@ -13,6 +13,7 @@ It is intentionally separate from the project root `README.md`.
 - `week-1-instructor-solution-guide.md`
 - `week-2-instructor-solution-guide.md`
 - `week-2-student-worksheet.md`
+- `week-3-student-worksheet.md`
 
 ## Recommended Sequence
 
