@@ -2,6 +2,7 @@ const { expect } = require("chai");
 const Board = require("../board");
 const Screen = require("../game/screen");
 const { Rook, King, Pawn } = require("../pieces");
+const { ComputerPlayer } = require("../players");
 
 function loadGameWithPromptResponses(responses) {
   const gamePath = require.resolve("../game");
@@ -42,11 +43,14 @@ function loadGameWithPromptResponses(responses) {
 describe("The Game Class", () => {
   describe("game flow integration", () => {
     it("should start a game and end it through forfeit", () => {
-      const { Game, restore } = loadGameWithPromptResponses(["Alice", "Bob"]);
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
 
       const originalSetTimeout = global.setTimeout;
       const originalMathRandom = Math.random;
-
       const originalInitialize = Screen.initialize;
       const originalSetGridLines = Screen.setGridLines;
       const originalSetBackgroundColor = Screen.setBackgroundColor;
@@ -89,7 +93,6 @@ describe("The Game Class", () => {
       } finally {
         global.setTimeout = originalSetTimeout;
         Math.random = originalMathRandom;
-
         Screen.initialize = originalInitialize;
         Screen.setGridLines = originalSetGridLines;
         Screen.setBackgroundColor = originalSetBackgroundColor;
@@ -97,13 +100,16 @@ describe("The Game Class", () => {
         Screen.setMessage = originalSetMessage;
         Screen.render = originalRender;
         Screen.quit = originalQuit;
-
         restore();
       }
     });
 
     it("should end the game when doMove captures a king", () => {
-      const { Game, restore } = loadGameWithPromptResponses(["Alice", "Bob"]);
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
       const game = Object.create(Game.prototype);
 
       const boardObj = new Board();
@@ -145,7 +151,11 @@ describe("The Game Class", () => {
     });
 
     it("should recover from invalid piece selection to valid move selection", () => {
-      const { Game, restore } = loadGameWithPromptResponses(["Alice", "Bob"]);
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
       const game = Object.create(Game.prototype);
 
       const boardObj = new Board();
@@ -170,10 +180,9 @@ describe("The Game Class", () => {
         },
       };
 
+      const messages = [];
       const originalSetMessage = Screen.setMessage;
       const originalRender = Screen.render;
-
-      const messages = [];
       let chooseMoveCalled = false;
       let chosenPiece = null;
 
@@ -207,11 +216,91 @@ describe("The Game Class", () => {
         restore();
       }
     });
+
+    it("should create a ComputerPlayer in single-player mode", () => {
+      const { Game, restore } = loadGameWithPromptResponses(["1", "Alice"]);
+
+      const originalSetTimeout = global.setTimeout;
+      const originalMathRandom = Math.random;
+      const originalInitialize = Screen.initialize;
+      const originalSetGridLines = Screen.setGridLines;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalAddCommand = Screen.addCommand;
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      try {
+        global.setTimeout = (fn) => fn();
+        Math.random = () => 0;
+        Screen.initialize = () => {};
+        Screen.setGridLines = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.addCommand = () => {};
+        Screen.setMessage = () => {};
+        Screen.render = () => {};
+
+        const game = new Game();
+        expect(game.isSinglePlayer).to.equal(true);
+        expect(game.p2).to.be.instanceOf(ComputerPlayer);
+      } finally {
+        global.setTimeout = originalSetTimeout;
+        Math.random = originalMathRandom;
+        Screen.initialize = originalInitialize;
+        Screen.setGridLines = originalSetGridLines;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
+    it("should automatically process an AI turn when the computer starts", () => {
+      const { Game, restore } = loadGameWithPromptResponses(["1", "Alice"]);
+
+      const originalSetTimeout = global.setTimeout;
+      const originalMathRandom = Math.random;
+      const originalInitialize = Screen.initialize;
+      const originalSetGridLines = Screen.setGridLines;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalAddCommand = Screen.addCommand;
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      const messages = [];
+
+      try {
+        global.setTimeout = (fn) => fn();
+        Math.random = () => 1;
+        Screen.initialize = () => {};
+        Screen.setGridLines = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.addCommand = () => {};
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+
+        const game = new Game();
+
+        expect(messages[messages.length - 1]).to.equal("Alice's move!");
+        expect(game.currentPlayer.name).to.equal("Alice");
+      } finally {
+        global.setTimeout = originalSetTimeout;
+        Math.random = originalMathRandom;
+        Screen.initialize = originalInitialize;
+        Screen.setGridLines = originalSetGridLines;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
   });
 
   describe("the forfeit() method", () => {
     it("should award the win to the non-current player at the moment forfeit is called", () => {
       const { Game, restore } = loadGameWithPromptResponses([
+        "2",
         "Player 1",
         "Player 2",
       ]);

@@ -3,7 +3,7 @@ let prompt = require("prompt-sync")();
 const Board = require("../board");
 const Screen = require("./screen");
 const Cursor = require("./cursor");
-const { HumanPlayer } = require("../players");
+const { HumanPlayer, ComputerPlayer } = require("../players");
 const { AvailableMovesList, CompletedMovesList, Move } = require("../moves");
 
 const GameStatus = {
@@ -17,9 +17,18 @@ const GameStatus = {
 
 class Game {
   constructor() {
+    // Mode selection keeps the main game loop reusable while allowing
+    // different player strategies (human vs AI) to plug into the same flow.
+    const modeChoice = prompt(
+      "Enter game mode (1 for single-player, 2 for two-player). ",
+    );
+    this.isSinglePlayer = modeChoice === "1";
+
     const p1Name = prompt("Player 1, please enter your name. ");
     console.log(`Welcome ${p1Name}\n`);
-    const p2Name = prompt("Player 2, please enter your name. ");
+    const p2Name = this.isSinglePlayer
+      ? "Computer"
+      : prompt("Player 2, please enter your name. ");
     console.log(`Welcome ${p2Name}\n`);
     // setTimeout(() => console.log('Initializing in 3...'), 1000);
     // setTimeout(() => console.log('2...'), 2000);
@@ -30,11 +39,15 @@ class Game {
 
       if (!chooseStarter) {
         this.p1 = new HumanPlayer(p1Name, true);
-        this.p2 = new HumanPlayer(p2Name, false);
+        this.p2 = this.isSinglePlayer
+          ? new ComputerPlayer(p2Name, false)
+          : new HumanPlayer(p2Name, false);
         this.currentPlayer = this.p1;
       } else {
         this.p1 = new HumanPlayer(p1Name, false);
-        this.p2 = new HumanPlayer(p2Name, true);
+        this.p2 = this.isSinglePlayer
+          ? new ComputerPlayer(p2Name, true)
+          : new HumanPlayer(p2Name, true);
         this.currentPlayer = this.p2;
       }
 
@@ -76,6 +89,8 @@ class Game {
 
       Screen.setMessage(`${this.currentPlayer.name}'s turn!`);
       Screen.render();
+
+      this._processComputerTurn();
     }, 500);
   }
 
@@ -155,6 +170,25 @@ class Game {
 
     Screen.setMessage(`${this.currentPlayer.name}'s move!`);
     Screen.render();
+
+    this._processComputerTurn();
+  }
+
+  _processComputerTurn() {
+    if (!this.currentPlayer || this.currentPlayer.getIsHuman()) {
+      return;
+    }
+
+    const selectedMove = this.currentPlayer.chooseMove(this);
+
+    if (!selectedMove) {
+      Screen.setMessage(`${this.currentPlayer.name} has no legal moves.`);
+      Screen.render();
+      return;
+    }
+
+    this.startingPosition = selectedMove.start;
+    this.doMove(selectedMove.end);
   }
 
   _resetBackground(cRow, cCol) {
@@ -212,7 +246,7 @@ class Game {
     Screen.render();
   }
 
-  validMoves(piece, square) {
+  _collectValidMoves(piece, square) {
     let moves = new AvailableMovesList();
     let board = this.gameBoard.board;
 
@@ -223,10 +257,53 @@ class Game {
         }
       }
     }
+
+    return moves;
+  }
+
+  validMoves(piece, square) {
+    const moves = this._collectValidMoves(piece, square);
     this.cursor.currentMove = moves.head;
 
     Screen.availableMoves = moves;
     return moves;
+  }
+
+  getLegalMovesForPlayer(player) {
+    const legalMoves = [];
+    const board = this.gameBoard.board;
+
+    // This method intentionally returns plain objects so both AI engines and
+    // tests can consume the same legal-move data without screen side effects.
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        const startSquare = board[row][col];
+        const piece = startSquare.getPiece();
+
+        if (!piece || piece.isWhite() !== player.getIsWhiteSide()) {
+          continue;
+        }
+
+        const possibleMoves = this._collectValidMoves(piece, startSquare);
+        let curr = possibleMoves.head;
+        let count = 0;
+
+        while (curr && count < possibleMoves.length) {
+          const [endRow, endCol] = curr.val;
+          legalMoves.push({
+            start: [row, col],
+            end: [endRow, endCol],
+            startSquare,
+            endSquare: board[endRow][endCol],
+            piece,
+          });
+          curr = curr.next;
+          count++;
+        }
+      }
+    }
+
+    return legalMoves;
   }
 }
 
