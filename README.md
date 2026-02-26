@@ -1,87 +1,96 @@
-# Terminal Chess (Node.js)
+# Chess 4 Less
 
-A terminal-based chess app built in JavaScript with an object-oriented design, test-driven workflow, and instructional architecture for classroom use.
+Chess 4 Less is a polished terminal chess application built with JavaScript and Node.js. The project emphasizes clean object-oriented design, test-driven development, and a readable gameplay experience in the command line.
 
-## Features
+## Project Highlights
 
-- Full board initialization and piece movement rules
-- Two-player mode (human vs human)
-- Single-player mode (human vs basic AI)
-- Basic AI move selection with a Binary Search Tree-backed move ranking flow
-- Test suite for pieces, board behavior, and game flow integration
+- Full playable chess loop in the terminal
+- Single-player mode (human vs computer) and two-player mode (human vs human)
+- Check and checkmate enforcement
+- Turn-based input flow with AI “thinking” delay
+- Enhanced terminal presentation (startup splash, board labeling, capture panels)
+- Comprehensive automated test coverage across game flow, board logic, and pieces
 
-## Tech Stack
+## Installation
 
-- Node.js
-- Mocha + Chai
+### 1) Clone
 
-## Quick Start
+```bash
+git clone <your-repo-url>
+cd chess-eod
+```
+
+### 2) Install dependencies
 
 ```bash
 npm install
+```
+
+### 3) Start the game
+
+```bash
 node index.js
 ```
 
-At launch, choose:
+When prompted for mode:
 
-- `1` for single-player (vs computer)
-- `2` for two-player
+- Enter `1` for single-player
+- Enter `2` for two-player
 
-## Run Tests
+## Controls
+
+- `up`, `down`, `left`, `right`: move cursor
+- `return`: select/confirm
+- `f`: forfeit
+- `q`: quit
+
+## Testing
+
+Run the full test suite:
 
 ```bash
 npm test
 ```
 
-## Controls
+Run focused regression checks:
 
-- Arrow-key commands via screen command mapping (`up`, `down`, `left`, `right`)
-- `return` to select piece / confirm move
-- `f` to forfeit
-- `q` to quit
+```bash
+npm run test:regression
+```
 
-## Project Goals
+## Technologies & Packages
 
-This project is intentionally designed to support:
+### Runtime
 
-- object-oriented programming (OOP)
-- test-driven development (TDD)
-- progressive introduction of data structures and algorithmic thinking
+- Node.js
+- JavaScript (CommonJS modules)
 
-## Learning / Starter Branch
+### Core Packages
 
-The `main` branch is intended to showcase the app experience.
+- `prompt-sync` for interactive terminal prompts
+- `keypress` for real-time board navigation and command handling
 
-For instructional use, use a separate starter branch with:
+### Testing
 
-- scaffolded or stubbed implementation points
-- guided exercises and docs
-- progressive concept reveal for students
+- `mocha` as the test runner
+- `chai` for assertions
+- `chai-spies` for behavior verification in selected tests
 
-Instructional documentation lives in:
+## Architecture Overview
 
-- `docs/instructional/`
-
-## Suggested Branch Convention
-
-- `main` → polished, app-facing branch for GitHub visitors
-- `starter` (or `starter/<cohort-or-term>`) → classroom branch with stubs + exercises
-
-Examples:
-
-- `starter`
-- `starter/spring-2026`
-- `starter/fundamentals`
-
-## Suggested Release/Tag Convention
-
-Use lightweight tags to mark teaching milestones:
-
-- `app-v1.0.0` (showcase baseline)
-- `starter-v1.0.0` (initial classroom baseline)
-- `starter-v1.1.0` (updated exercises/tests)
+- `game/`: orchestration, cursor flow, screen rendering, command handling
+- `board/`, `squares/`: board and coordinate primitives
+- `pieces/`: piece-specific movement rules (king, queen, rook, bishop, knight, pawn)
+- `players/`: human/computer player models
+- `ai/`: move-ranking and engine behavior for computer turns
+- `moves/`: available/completed move structures
+- `test/`: integration and unit coverage
 
 ## Notes
 
-- The AI is intentionally simple by design.
-- The focus is architecture clarity and instructional value over chess strength.
+- AI is intentionally lightweight and deterministic-first for clarity and testability.
+- The codebase is structured to support learning, extension, and refactoring.
+
+## Educational Branch
+
+For scaffolded instructional materials and staged exercises, use the `starter` branch.

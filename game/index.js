@@ -22,9 +22,16 @@ class Game {
 
     // Mode selection keeps the main game loop reusable while allowing
     // different player strategies (human vs AI) to plug into the same flow.
-    const modeChoice = prompt(
-      "Enter game mode (1 for single-player, 2 for two-player). ",
-    );
+    let modeChoice = String(
+      prompt("Enter game mode (1 for single-player, 2 for two-player). "),
+    ).trim();
+    while (modeChoice !== "1" && modeChoice !== "2") {
+      modeChoice = String(
+        prompt(
+          "Invalid selection. Enter 1 for single-player or 2 for two-player. ",
+        ),
+      ).trim();
+    }
     this.isSinglePlayer = modeChoice === "1";
 
     const p1Name = prompt("Player 1, please enter your name. ");
@@ -57,15 +64,17 @@ class Game {
       this.gameBoard = new Board();
       this.status = GameStatus.ACTIVE;
       this.completedMoves = new CompletedMovesList();
+      this.computerMoveDelayMs = 900;
+      this.pendingComputerTurn = null;
 
       this.cursor = new Cursor(8, 8);
+      this._setInitialCursorPosition();
 
       this.startingPosition = null;
 
       Screen.initialize(8, 8, this.gameBoard.board);
+      this._highlightCursor();
       Screen.setGridLines(true);
-
-      Screen.setBackgroundColor(0, 0, "yellow");
 
       Screen.addCommand(
         "up",
@@ -97,16 +106,162 @@ class Game {
     }, 500);
   }
 
-  static checkWin(endPiece, currentPlayer) {
-    if (endPiece.getSymbol() === "k") {
-      Game.endGame(currentPlayer);
-    }
-  }
-
-  static endGame(winner) {
-    Screen.setMessage(`${winner.name} wins!`);
+  static endGame(winner, message = null) {
+    Screen.setMessage(message || `${winner.name} wins!`);
     Screen.render();
     Screen.quit();
+  }
+
+  _otherPlayer(player) {
+    return player && player.name === this.p1.name ? this.p2 : this.p1;
+  }
+
+  _findKingSquare(isWhiteSide) {
+    const board = this.gameBoard.board;
+
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        const piece = board[row][col].getPiece();
+        if (
+          piece &&
+          piece.getSymbol() === "k" &&
+          piece.isWhite() === isWhiteSide
+        ) {
+          return board[row][col];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  _isSquareAttacked(targetSquare, byWhiteSide) {
+    const board = this.gameBoard.board;
+    const targetX = targetSquare.getX();
+    const targetY = targetSquare.getY();
+
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        const attackingSquare = board[row][col];
+        const piece = attackingSquare.getPiece();
+
+        if (!piece || piece.isWhite() !== byWhiteSide) {
+          continue;
+        }
+
+        const symbol = piece.getSymbol();
+        if (symbol === "k") {
+          const kingX = attackingSquare.getX();
+          const kingY = attackingSquare.getY();
+          const xDelta = Math.abs(kingX - targetX);
+          const yDelta = Math.abs(kingY - targetY);
+          if (xDelta <= 1 && yDelta <= 1 && (xDelta !== 0 || yDelta !== 0)) {
+            return true;
+          }
+          continue;
+        }
+
+        if (symbol === "p") {
+          if (piece.canAttack(board, attackingSquare, targetSquare)) {
+            return true;
+          }
+          continue;
+        }
+
+        if (piece.canMove(board, attackingSquare, targetSquare)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  _isKingInCheck(player) {
+    const kingSquare = this._findKingSquare(player.getIsWhiteSide());
+    if (!kingSquare) {
+      return false;
+    }
+
+    return this._isSquareAttacked(kingSquare, !player.getIsWhiteSide());
+  }
+
+  _isLegalMove(startSquare, endSquare, piece) {
+    const endPiece = endSquare.getPiece();
+    if (endPiece && endPiece.getSymbol() === "k") {
+      return false;
+    }
+
+    const board = this.gameBoard.board;
+    const startX = startSquare.getX();
+    const startY = startSquare.getY();
+    const endX = endSquare.getX();
+    const endY = endSquare.getY();
+
+    board[endX][endY].setPiece(piece);
+    board[startX][startY].setPiece(null);
+
+    const movingPlayer = {
+      getIsWhiteSide: () => piece.isWhite(),
+    };
+    const leavesKingInCheck = this._isKingInCheck(movingPlayer);
+
+    board[startX][startY].setPiece(piece);
+    board[endX][endY].setPiece(endPiece);
+
+    return !leavesKingInCheck;
+  }
+
+  _evaluateCurrentPlayerState() {
+    const inCheck = this._isKingInCheck(this.currentPlayer);
+    const legalMoves = this.getLegalMovesForPlayer(this.currentPlayer);
+
+    if (legalMoves.length) {
+      return { ended: false, inCheck };
+    }
+
+    if (inCheck) {
+      const winner = this._otherPlayer(this.currentPlayer);
+      Game.endGame(winner, `Checkmate! ${winner.name} wins!`);
+      return { ended: true, inCheck: true };
+    }
+
+    Screen.setMessage("Stalemate! It's a draw.");
+    Screen.render();
+    Screen.quit();
+    return { ended: true, inCheck: false };
+  }
+
+  _clearMoveSelectionState() {
+    if (this.cursor && this.cursor.getIsMoveSelection()) {
+      this.cursor.setIsMoveSelection();
+    }
+
+    if (this.cursor) {
+      this.cursor.currentMove = null;
+    }
+
+    this.startingPosition = null;
+    Screen.availableMoves = null;
+  }
+
+  _isCoordinateInMovesList(movesList, row, col) {
+    if (!movesList || !movesList.head || !movesList.length) {
+      return false;
+    }
+
+    let curr = movesList.head;
+    let count = 0;
+    while (curr && count < movesList.length) {
+      const [moveRow, moveCol] = curr.val;
+      if (moveRow === row && moveCol === col) {
+        return true;
+      }
+      curr = curr.next;
+      count++;
+    }
+
+    return false;
   }
 
   forfeit() {
@@ -115,14 +270,40 @@ class Game {
   }
 
   doMove(endCoords) {
+    if (!this.startingPosition) {
+      this._clearMoveSelectionState();
+      Screen.setMessage("Select a piece first.");
+      Screen.render();
+      return;
+    }
+
     const [endRow, endCol] = endCoords;
     const [startRow, startCol] = this.startingPosition;
     const board = this.gameBoard.board;
+    const startSquare = board[startRow][startCol];
+    const endSquare = board[endRow][endCol];
     const endPiece = board[endRow][endCol].getPiece();
     const startPiece = board[startRow][startCol].getPiece();
 
+    if (!startPiece) {
+      this._clearMoveSelectionState();
+      Screen.setMessage("Select a piece first.");
+      Screen.render();
+      return;
+    }
+
+    if (
+      startPiece.isWhite() !== this.currentPlayer.getIsWhiteSide() ||
+      !startPiece.canMove(board, startSquare, endSquare) ||
+      !this._isLegalMove(startSquare, endSquare, startPiece)
+    ) {
+      this._clearMoveSelectionState();
+      Screen.setMessage("Select a valid destination.");
+      Screen.render();
+      return;
+    }
+
     if (endPiece) {
-      Game.checkWin(endPiece, this.currentPlayer);
       endPiece.setCaptured();
       if (endPiece.isWhite()) {
         Screen.captures.addWhiteCapture(
@@ -140,17 +321,15 @@ class Game {
     }
 
     this.completedMoves.addToTail(
-      new Move(
-        this.currentPlayer,
-        board[startRow][startCol],
-        board[endRow][endCol],
-      ),
+      new Move(this.currentPlayer, startSquare, endSquare),
     );
     this.currentPlayer =
       this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
-    this.cursor.setIsMoveSelection();
-    board[endRow][endCol].setPiece(startPiece);
-    board[startRow][startCol].setPiece(null);
+
+    endSquare.setPiece(startPiece);
+    startSquare.setPiece(null);
+    this._clearMoveSelectionState();
+
     Screen.setGrid(startRow, startCol, " ");
     let symbol = startPiece.getSymbol();
     symbol = startPiece.isWhite()
@@ -170,31 +349,67 @@ class Game {
     // check for promotion
 
     this._resetBackground(endRow, endCol);
+    this._highlightCursor();
 
-    Screen.setMessage(`${this.currentPlayer.name}'s move!`);
+    const { ended, inCheck } = this._evaluateCurrentPlayerState();
+    if (ended) {
+      return;
+    }
+
+    if (inCheck) {
+      Screen.setMessage(
+        `Check on ${this.currentPlayer.name}! ${this.currentPlayer.name}'s move!`,
+      );
+    } else {
+      Screen.setMessage(`${this.currentPlayer.name}'s move!`);
+    }
     Screen.render();
 
     this._processComputerTurn();
   }
 
   _processComputerTurn() {
-    if (!this.currentPlayer || this.currentPlayer.getIsHuman()) {
+    const isHumanTurn =
+      !this.currentPlayer ||
+      !this.currentPlayer.getIsHuman ||
+      this.currentPlayer.getIsHuman();
+
+    if (isHumanTurn) {
       return;
     }
 
-    // STARTER TODO (Week 1): Replace this direct call with a mockable seam
-    // in tests so students can practice dependency isolation.
+  // STARTER TODO (Week 1): Replace this direct call with a mockable seam
+  // in tests so students can practice dependency isolation.
 
-    const selectedMove = this.currentPlayer.chooseMove(this);
-
-    if (!selectedMove) {
-      Screen.setMessage(`${this.currentPlayer.name} has no legal moves.`);
-      Screen.render();
+    if (this.pendingComputerTurn) {
       return;
     }
 
-    this.startingPosition = selectedMove.start;
-    this.doMove(selectedMove.end);
+    Screen.setMessage(`${this.currentPlayer.name} is thinking...`);
+    Screen.render();
+
+    this.pendingComputerTurn = setTimeout(() => {
+      this.pendingComputerTurn = null;
+
+      const isHumanNow =
+        !this.currentPlayer ||
+        !this.currentPlayer.getIsHuman ||
+        this.currentPlayer.getIsHuman();
+
+      if (isHumanNow) {
+        return;
+      }
+
+      const selectedMove = this.currentPlayer.chooseMove(this);
+
+      if (!selectedMove) {
+        this._evaluateCurrentPlayerState();
+        return;
+      }
+
+      this.startingPosition = selectedMove.start;
+      this.doMove(selectedMove.end);
+    }, this.computerMoveDelayMs);
   }
 
   _resetBackground(cRow, cCol) {
@@ -208,10 +423,90 @@ class Game {
     }
   }
 
+  _setInitialCursorPosition() {
+    if (!this.cursor) {
+      return;
+    }
+
+    const activeHuman =
+      this.currentPlayer &&
+      this.currentPlayer.getIsHuman &&
+      this.currentPlayer.getIsHuman()
+        ? this.currentPlayer
+        : [this.p1, this.p2].find(
+            (player) => player && player.getIsHuman && player.getIsHuman(),
+          );
+
+    if (!activeHuman) {
+      return;
+    }
+
+    this.cursor.row = activeHuman.getIsWhiteSide() ? 7 : 0;
+    this.cursor.col = 0;
+  }
+
+  _highlightCursor() {
+    if (!this.cursor) {
+      return;
+    }
+
+    const hasPositionMethod = typeof this.cursor.position === "function";
+    const row = hasPositionMethod
+      ? this.cursor.position().row
+      : this.cursor.row;
+    const col = hasPositionMethod
+      ? this.cursor.position().col
+      : this.cursor.col;
+
+    if (typeof row !== "number" || typeof col !== "number") {
+      return;
+    }
+
+    Screen.setBackgroundColor(row, col, "yellow");
+  }
+
   select() {
+    const isHumanTurn =
+      this.currentPlayer &&
+      (!this.currentPlayer.getIsHuman || this.currentPlayer.getIsHuman());
+
+    if (!isHumanTurn) {
+      Screen.setMessage(`${this.currentPlayer.name} is thinking...`);
+      Screen.render();
+      return;
+    }
+
     const { row: cRow, col: cCol } = this.cursor.position();
 
     if (this.cursor.getIsMoveSelection()) {
+      if (!this.startingPosition) {
+        this._clearMoveSelectionState();
+        Screen.setMessage("Select a piece first.");
+        Screen.render();
+        return;
+      }
+
+      const [startRow, startCol] = this.startingPosition;
+      const startSquare = this.gameBoard.board[startRow][startCol];
+      const startPiece = startSquare.getPiece();
+
+      if (
+        !startPiece ||
+        startPiece.isWhite() !== this.currentPlayer.getIsWhiteSide()
+      ) {
+        this._clearMoveSelectionState();
+        Screen.setMessage("Select a piece first.");
+        Screen.render();
+        return;
+      }
+
+      if (!this._isCoordinateInMovesList(Screen.availableMoves, cRow, cCol)) {
+        this._clearMoveSelectionState();
+        Screen.setMessage("Select a valid destination.");
+        Screen.render();
+        return;
+      }
+
       this.doMove([cRow, cCol]);
     } else {
       this._resetBackground(cRow, cCol);
@@ -246,7 +541,9 @@ class Game {
       curr = curr.next;
       count++;
     }
-    this.cursor.setIsMoveSelection();
+    if (!this.cursor.getIsMoveSelection()) {
+      this.cursor.setIsMoveSelection();
+    }
 
     Screen.setMessage("Where would you like to move?");
     Screen.render();
@@ -258,7 +555,11 @@ class Game {
 
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[0].length; col++) {
-        if (piece.canMove(board, square, board[row][col])) {
+        const endSquare = board[row][col];
+        if (
+          piece.canMove(board, square, endSquare) &&
+          this._isLegalMove(square, endSquare, piece)
+        ) {
           moves.addToTail([row, col]);
         }
       }

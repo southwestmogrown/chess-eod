@@ -154,17 +154,35 @@ class Screen {
     if (!Screen.initialized) return;
 
     const spacer = new Array(Screen.spacerCount).fill(" ").join("");
+    const columnLabels = Array.from({ length: Screen.numCols }, (_, idx) =>
+      String.fromCharCode(65 + idx),
+    );
+    const columnSeparator = Screen.gridLines ? " | " : "   ";
+    const filesHeader = `    ${columnLabels.join(columnSeparator)}`;
 
     console.clear();
 
     let borderLength = Screen.numCols * (Screen.spacerCount * 2 + 1) + 2;
     if (Screen.gridLines) borderLength += Screen.numCols - 1;
-    let horizontalBorder = new Array(borderLength)
-      .fill(Screen.borderChar)
-      .join("");
+    const horizontalBorder = `|${"-".repeat(borderLength - 2)}|`;
+    const rankDivider = "--";
+    const borderedHorizontal = `${rankDivider}${horizontalBorder}${rankDivider}`;
 
-    console.log(Screen.captures.getWhiteCaptures().join(" "));
-    console.log(horizontalBorder);
+    const sectionWidth = Math.max(borderLength + 6, 40);
+    const sectionDivider = "=".repeat(sectionWidth);
+    const subsectionDivider = "-".repeat(sectionWidth);
+    const whiteCaptures =
+      Screen.captures.getWhiteCaptures().join(" ") || "None";
+    const blackCaptures =
+      Screen.captures.getBlackCaptures().join(" ") || "None";
+
+    console.log(sectionDivider);
+    console.log("♟  CHESS 4 LESS");
+    console.log(sectionDivider);
+    console.log(`White Captures: ${whiteCaptures}`);
+    console.log(subsectionDivider);
+    console.log(filesHeader);
+    console.log(borderedHorizontal);
 
     for (let row = 0; row < Screen.numRows; row++) {
       const rowCopy = [...Screen.grid[row]];
@@ -185,27 +203,29 @@ class Screen {
 
       if (Screen.gridLines && row > 0) {
         let horizontalGridLine = new Array(rowCopy.length * 4 - 1).fill("-");
-        horizontalGridLine.unshift(
-          `${Screen.borderChar}${Screen.defaultBackgroundColor}`,
-        );
-        horizontalGridLine.push(`\x1b[0m${Screen.borderChar}`);
+        horizontalGridLine.unshift(`|`);
+        horizontalGridLine.push(`|`);
 
-        console.log(horizontalGridLine.join(""));
+        console.log(
+          `${rankDivider}${horizontalGridLine.join("")}${rankDivider}`,
+        );
       }
 
-      rowCopy.unshift(`${Screen.borderChar}`);
-      rowCopy.push(`${Screen.borderChar}`);
+      rowCopy.unshift("|");
+      rowCopy.push("|");
 
-      console.log(rowCopy.join(""));
+      const rank = 8 - row;
+      console.log(`${rank} ${rowCopy.join("")} ${rank}`);
     }
 
-    console.log(horizontalBorder);
-
-    console.log(Screen.captures.getBlackCaptures().join(" "));
-
-    console.log("");
-
-    console.log(Screen.message);
+    console.log(borderedHorizontal);
+    console.log(filesHeader);
+    console.log(subsectionDivider);
+    console.log(`Black Captures: ${blackCaptures}`);
+    console.log(sectionDivider);
+    console.log(`Status: ${Screen.message}`);
+    console.log("Controls: arrows move | return select | f forfeit | q quit");
+    console.log(sectionDivider);
   }
 
   static setQuitMessage(quitMessage) {

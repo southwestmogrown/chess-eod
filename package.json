@@ -1,11 +1,11 @@
 {
-  "name": "chess-project",
+  "name": "chess-4-less",
   "version": "1.0.0",
   "description": "Design a Chess game using OOP",
   "main": "game.js",
   "scripts": {
-    "test": "mocha",
-    "test:regression": "mocha --grep \"The Cursor class|The Game Class\"",
+    "test": "mocha \"test/**/*.js\"",
+    "test:regression": "mocha \"test/**/*.js\" --grep \"The Cursor class|clear stale move-selection state|reject stale destination coordinates\"",
     "test:week1": "mocha starter/week1/**/*.spec.js",
     "test:week2": "mocha starter/week2/**/*.spec.js"
   },
