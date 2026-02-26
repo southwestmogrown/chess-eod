@@ -4,7 +4,8 @@
   "description": "Design a Chess game using OOP",
   "main": "game.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:regression": "mocha --grep \"The Cursor class|The Game Class\""
   },
   "keywords": [],
   "author": "",
