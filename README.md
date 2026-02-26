@@ -11,15 +11,6 @@ Chess 4 Less is a polished terminal chess application built with JavaScript and 
 - Enhanced terminal presentation (startup splash, board labeling, capture panels)
 - Comprehensive automated test coverage across game flow, board logic, and pieces
 
-## Demo Screenshots
-
-You can drop in your screenshots later at the paths below.
-
-![Startup screen](assets/screenshots/startup.png)
-![Board during play](assets/screenshots/gameplay.png)
-![Single-player turn flow](assets/screenshots/single-player.png)
-![Endgame state](assets/screenshots/endgame.png)
-
 ## Installation
 
 ### 1) Clone
