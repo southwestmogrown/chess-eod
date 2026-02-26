@@ -5,6 +5,8 @@ class ComputerPlayer extends Player {
   constructor(name, isWhiteSide, engine = new BasicEngine()) {
     super(name, isWhiteSide);
     this.isHuman = false;
+    // STARTER TODO (Week 3): let students inject alternate engines
+    // (heuristic, random, or graph-aware) through this strategy seam.
     this.engine = engine;
   }
 

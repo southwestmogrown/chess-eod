@@ -9,6 +9,7 @@ It is intentionally separate from the project root `README.md`.
 - `week-2-big-o-linear-ds.md`
 - `week-3-bst-graphs-ai.md`
 - `starter-branch-plan.md`
+- `starter-first-commit-checklist.md`
 
 ## Recommended Sequence
 
