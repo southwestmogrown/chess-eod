@@ -165,6 +165,8 @@ class Screen {
     let borderLength = Screen.numCols * (Screen.spacerCount * 2 + 1) + 2;
     if (Screen.gridLines) borderLength += Screen.numCols - 1;
     const horizontalBorder = `|${"-".repeat(borderLength - 2)}|`;
+    const rankDivider = "--";
+    const borderedHorizontal = `${rankDivider}${horizontalBorder}${rankDivider}`;
 
     const sectionWidth = Math.max(borderLength + 6, 40);
     const sectionDivider = "=".repeat(sectionWidth);
@@ -175,12 +177,12 @@ class Screen {
       Screen.captures.getBlackCaptures().join(" ") || "None";
 
     console.log(sectionDivider);
-    console.log("♟  CHESS EOD");
+    console.log("♟  CHESS 4 LESS");
     console.log(sectionDivider);
     console.log(`White Captures: ${whiteCaptures}`);
     console.log(subsectionDivider);
     console.log(filesHeader);
-    console.log(horizontalBorder);
+    console.log(borderedHorizontal);
 
     for (let row = 0; row < Screen.numRows; row++) {
       const rowCopy = [...Screen.grid[row]];
@@ -204,7 +206,9 @@ class Screen {
         horizontalGridLine.unshift(`|`);
         horizontalGridLine.push(`|`);
 
-        console.log(horizontalGridLine.join(""));
+        console.log(
+          `${rankDivider}${horizontalGridLine.join("")}${rankDivider}`,
+        );
       }
 
       rowCopy.unshift("|");
@@ -214,7 +218,7 @@ class Screen {
       console.log(`${rank} ${rowCopy.join("")} ${rank}`);
     }
 
-    console.log(horizontalBorder);
+    console.log(borderedHorizontal);
     console.log(filesHeader);
     console.log(subsectionDivider);
     console.log(`Black Captures: ${blackCaptures}`);

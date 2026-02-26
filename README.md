@@ -1,4 +1,4 @@
-# Terminal Chess (Node.js)
+# Chess 4 Less (Node.js)
 
 A terminal-based chess game built in JavaScript with an emphasis on object-oriented design, test-driven development, and educational architecture.
 

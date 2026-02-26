@@ -1,5 +1,5 @@
 {
-  "name": "chess-project",
+  "name": "chess-4-less",
   "version": "1.0.0",
   "description": "Design a Chess game using OOP",
   "main": "game.js",

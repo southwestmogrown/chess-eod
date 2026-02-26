@@ -492,6 +492,68 @@ describe("The Game Class", () => {
       }
     });
 
+    it("should restore cursor highlight after move background reset", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      game.gameBoard = new Board();
+      game.startingPosition = [6, 0];
+      game.currentPlayer = {
+        name: "Alice",
+        getIsWhiteSide: () => true,
+        getIsHuman: () => true,
+      };
+      game.p1 = game.currentPlayer;
+      game.p2 = {
+        name: "Bob",
+        getIsWhiteSide: () => false,
+        getIsHuman: () => true,
+      };
+      game.completedMoves = { addToTail: () => {} };
+      game.cursor = {
+        position: () => ({ row: 0, col: 0 }),
+        getIsMoveSelection: () => false,
+        setIsMoveSelection: () => {},
+        currentMove: null,
+      };
+
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+      const originalSetGrid = Screen.setGrid;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+
+      const colorCalls = [];
+
+      try {
+        Screen.setMessage = () => {};
+        Screen.render = () => {};
+        Screen.setGrid = () => {};
+        Screen.setBackgroundColor = (row, col, color) => {
+          colorCalls.push({ row, col, color });
+        };
+
+        game.doMove([5, 0]);
+
+        const cursorCellCalls = colorCalls.filter(
+          (call) => call.row === 0 && call.col === 0,
+        );
+        expect(cursorCellCalls.length).to.be.greaterThan(0);
+        expect(cursorCellCalls[cursorCellCalls.length - 1].color).to.equal(
+          "yellow",
+        );
+      } finally {
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        Screen.setGrid = originalSetGrid;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        restore();
+      }
+    });
+
     it("should safely handle doMove when no valid starting piece is selected", () => {
       const { Game, restore } = loadGameWithPromptResponses([
         "2",

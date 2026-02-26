@@ -62,9 +62,8 @@ class Game {
       this.startingPosition = null;
 
       Screen.initialize(8, 8, this.gameBoard.board);
+      this._highlightCursor();
       Screen.setGridLines(true);
-
-      Screen.setBackgroundColor(0, 0, "yellow");
 
       Screen.addCommand(
         "up",
@@ -339,6 +338,7 @@ class Game {
     // check for promotion
 
     this._resetBackground(endRow, endCol);
+    this._highlightCursor();
 
     const { ended, inCheck } = this._evaluateCurrentPlayerState();
     if (ended) {
@@ -407,6 +407,26 @@ class Game {
         Screen.setBackgroundColor(row, col, "black");
       }
     }
+  }
+
+  _highlightCursor() {
+    if (!this.cursor) {
+      return;
+    }
+
+    const hasPositionMethod = typeof this.cursor.position === "function";
+    const row = hasPositionMethod
+      ? this.cursor.position().row
+      : this.cursor.row;
+    const col = hasPositionMethod
+      ? this.cursor.position().col
+      : this.cursor.col;
+
+    if (typeof row !== "number" || typeof col !== "number") {
+      return;
+    }
+
+    Screen.setBackgroundColor(row, col, "yellow");
   }
 
   select() {
