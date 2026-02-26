@@ -17,6 +17,9 @@ const GameStatus = {
 
 class Game {
   constructor() {
+    // STARTER TODO (Week 1): Keep board internals black-boxed in early labs.
+    // Students should work through Game/Player/Piece interfaces first.
+
     // Mode selection keeps the main game loop reusable while allowing
     // different player strategies (human vs AI) to plug into the same flow.
     let modeChoice = String(
@@ -375,6 +378,9 @@ class Game {
       return;
     }
 
+    // STARTER TODO (Week 1): Replace this direct call with a mockable seam
+    // in tests so students can practice dependency isolation.
+
     if (this.pendingComputerTurn) {
       return;
     }
@@ -573,6 +579,9 @@ class Game {
   getLegalMovesForPlayer(player) {
     const legalMoves = [];
     const board = this.gameBoard.board;
+
+    // STARTER NOTE: This method is intentionally the AI-facing boundary.
+    // Early lessons should use this boundary and avoid direct board internals.
 
     // This method intentionally returns plain objects so both AI engines and
     // tests can consume the same legal-move data without screen side effects.

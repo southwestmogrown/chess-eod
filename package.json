@@ -5,7 +5,9 @@
   "main": "game.js",
   "scripts": {
     "test": "mocha \"test/**/*.js\"",
-    "test:regression": "mocha \"test/**/*.js\" --grep \"The Cursor class|clear stale move-selection state|reject stale destination coordinates\""
+    "test:regression": "mocha \"test/**/*.js\" --grep \"The Cursor class|clear stale move-selection state|reject stale destination coordinates\"",
+    "test:week1": "mocha starter/week1/**/*.spec.js",
+    "test:week2": "mocha starter/week2/**/*.spec.js"
   },
   "keywords": [],
   "author": "",
