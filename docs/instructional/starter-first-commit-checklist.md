@@ -31,6 +31,16 @@ During Week 1 activities, students should consume board behavior through existin
 3. Refactor one duplicated branch in move-selection flow
 4. Explain class responsibility boundaries in a short write-up
 
+## Week 1 Exercise Lane Commands
+
+- Main suite (should stay green): `npm test`
+- Exercise lane (intentionally red first): `npm run test:week1`
+
+Exercise files:
+
+- `starter/week1/game-behavior.js`
+- `starter/week1/game-behavior.spec.js`
+
 ## Handoff Note Template (for instructor)
 
 - Starter branch tag:
