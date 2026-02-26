@@ -154,14 +154,17 @@ class Screen {
     if (!Screen.initialized) return;
 
     const spacer = new Array(Screen.spacerCount).fill(" ").join("");
+    const columnLabels = Array.from({ length: Screen.numCols }, (_, idx) =>
+      String.fromCharCode(65 + idx),
+    );
+    const columnSeparator = Screen.gridLines ? " | " : "   ";
+    const filesHeader = `    ${columnLabels.join(columnSeparator)}`;
 
     console.clear();
 
     let borderLength = Screen.numCols * (Screen.spacerCount * 2 + 1) + 2;
     if (Screen.gridLines) borderLength += Screen.numCols - 1;
-    let horizontalBorder = new Array(borderLength)
-      .fill(Screen.borderChar)
-      .join("");
+    const horizontalBorder = `|${"-".repeat(borderLength - 2)}|`;
 
     const sectionWidth = Math.max(borderLength + 6, 40);
     const sectionDivider = "=".repeat(sectionWidth);
@@ -176,7 +179,7 @@ class Screen {
     console.log(sectionDivider);
     console.log(`White Captures: ${whiteCaptures}`);
     console.log(subsectionDivider);
-    console.log("    A  B  C  D  E  F  G  H");
+    console.log(filesHeader);
     console.log(horizontalBorder);
 
     for (let row = 0; row < Screen.numRows; row++) {
@@ -198,23 +201,21 @@ class Screen {
 
       if (Screen.gridLines && row > 0) {
         let horizontalGridLine = new Array(rowCopy.length * 4 - 1).fill("-");
-        horizontalGridLine.unshift(
-          `${Screen.borderChar}${Screen.defaultBackgroundColor}`,
-        );
-        horizontalGridLine.push(`\x1b[0m${Screen.borderChar}`);
+        horizontalGridLine.unshift(`|`);
+        horizontalGridLine.push(`|`);
 
         console.log(horizontalGridLine.join(""));
       }
 
-      rowCopy.unshift(`${Screen.borderChar}`);
-      rowCopy.push(`${Screen.borderChar}`);
+      rowCopy.unshift("|");
+      rowCopy.push("|");
 
       const rank = 8 - row;
       console.log(`${rank} ${rowCopy.join("")} ${rank}`);
     }
 
     console.log(horizontalBorder);
-    console.log("    A  B  C  D  E  F  G  H");
+    console.log(filesHeader);
     console.log(subsectionDivider);
     console.log(`Black Captures: ${blackCaptures}`);
     console.log(sectionDivider);
