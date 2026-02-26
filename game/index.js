@@ -106,6 +106,38 @@ class Game {
     Screen.quit();
   }
 
+  _clearMoveSelectionState() {
+    if (this.cursor && this.cursor.getIsMoveSelection()) {
+      this.cursor.setIsMoveSelection();
+    }
+
+    if (this.cursor) {
+      this.cursor.currentMove = null;
+    }
+
+    this.startingPosition = null;
+    Screen.availableMoves = null;
+  }
+
+  _isCoordinateInMovesList(movesList, row, col) {
+    if (!movesList || !movesList.head || !movesList.length) {
+      return false;
+    }
+
+    let curr = movesList.head;
+    let count = 0;
+    while (curr && count < movesList.length) {
+      const [moveRow, moveCol] = curr.val;
+      if (moveRow === row && moveCol === col) {
+        return true;
+      }
+      curr = curr.next;
+      count++;
+    }
+
+    return false;
+  }
+
   forfeit() {
     const winner = this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
     Game.endGame(winner);
@@ -113,6 +145,7 @@ class Game {
 
   doMove(endCoords) {
     if (!this.startingPosition) {
+      this._clearMoveSelectionState();
       Screen.setMessage("Select a piece first.");
       Screen.render();
       return;
@@ -125,6 +158,7 @@ class Game {
     const startPiece = board[startRow][startCol].getPiece();
 
     if (!startPiece) {
+      this._clearMoveSelectionState();
       Screen.setMessage("Select a piece first.");
       Screen.render();
       return;
@@ -158,13 +192,9 @@ class Game {
     this.currentPlayer =
       this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
 
-    if (this.cursor.getIsMoveSelection()) {
-      this.cursor.setIsMoveSelection();
-    }
-
     board[endRow][endCol].setPiece(startPiece);
     board[startRow][startCol].setPiece(null);
-    this.startingPosition = null;
+    this._clearMoveSelectionState();
 
     Screen.setGrid(startRow, startCol, " ");
     let symbol = startPiece.getSymbol();
@@ -224,6 +254,34 @@ class Game {
     const { row: cRow, col: cCol } = this.cursor.position();
 
     if (this.cursor.getIsMoveSelection()) {
+      if (!this.startingPosition) {
+        this._clearMoveSelectionState();
+        Screen.setMessage("Select a piece first.");
+        Screen.render();
+        return;
+      }
+
+      const [startRow, startCol] = this.startingPosition;
+      const startSquare = this.gameBoard.board[startRow][startCol];
+      const startPiece = startSquare.getPiece();
+
+      if (
+        !startPiece ||
+        startPiece.isWhite() !== this.currentPlayer.getIsWhiteSide()
+      ) {
+        this._clearMoveSelectionState();
+        Screen.setMessage("Select a piece first.");
+        Screen.render();
+        return;
+      }
+
+      if (!this._isCoordinateInMovesList(Screen.availableMoves, cRow, cCol)) {
+        this._clearMoveSelectionState();
+        Screen.setMessage("Select a valid destination.");
+        Screen.render();
+        return;
+      }
+
       this.doMove([cRow, cCol]);
     } else {
       this._resetBackground(cRow, cCol);
@@ -258,7 +316,9 @@ class Game {
       curr = curr.next;
       count++;
     }
-    this.cursor.setIsMoveSelection();
+    if (!this.cursor.getIsMoveSelection()) {
+      this.cursor.setIsMoveSelection();
+    }
 
     Screen.setMessage("Where would you like to move?");
     Screen.render();

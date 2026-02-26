@@ -370,6 +370,109 @@ describe("The Game Class", () => {
         restore();
       }
     });
+
+    it("should clear stale move-selection state when starting piece no longer exists", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      const boardObj = new Board();
+      game.gameBoard = { board: boardObj.generateTestBoard() };
+      game.startingPosition = [0, 0];
+      game.currentPlayer = { getIsWhiteSide: () => true };
+
+      let isMoveSelection = true;
+      game.cursor = {
+        position: () => ({ row: 0, col: 0 }),
+        getIsMoveSelection: () => isMoveSelection,
+        setIsMoveSelection: () => {
+          isMoveSelection = !isMoveSelection;
+        },
+        currentMove: { val: [0, 0], next: null },
+      };
+
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+      const messages = [];
+
+      try {
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+
+        game.select();
+
+        expect(isMoveSelection).to.equal(false);
+        expect(game.startingPosition).to.equal(null);
+        expect(messages[messages.length - 1]).to.equal("Select a piece first.");
+      } finally {
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
+    it("should reject stale destination coordinates not in available moves", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      const boardObj = new Board();
+      const board = boardObj.generateTestBoard();
+      const whitePawn = new Pawn(true);
+      board[6][0].setPiece(whitePawn);
+
+      game.gameBoard = { board };
+      game.startingPosition = [6, 0];
+      game.currentPlayer = { getIsWhiteSide: () => true };
+
+      let isMoveSelection = true;
+      game.cursor = {
+        position: () => ({ row: 4, col: 4 }),
+        getIsMoveSelection: () => isMoveSelection,
+        setIsMoveSelection: () => {
+          isMoveSelection = !isMoveSelection;
+        },
+        currentMove: { val: [5, 0], next: null },
+      };
+
+      Screen.availableMoves = {
+        head: { val: [5, 0], next: null },
+        length: 1,
+      };
+
+      let doMoveCalled = false;
+      game.doMove = () => {
+        doMoveCalled = true;
+      };
+
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+      const messages = [];
+
+      try {
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+
+        game.select();
+
+        expect(doMoveCalled).to.equal(false);
+        expect(isMoveSelection).to.equal(false);
+        expect(game.startingPosition).to.equal(null);
+        expect(messages[messages.length - 1]).to.equal(
+          "Select a valid destination.",
+        );
+      } finally {
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
   });
 
   describe("the forfeit() method", () => {
