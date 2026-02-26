@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const Board = require("../board");
 const Screen = require("../game/screen");
-const { Rook, King, Pawn } = require("../pieces");
+const { Rook, King, Pawn, Queen } = require("../pieces");
 const { ComputerPlayer } = require("../players");
 
 function loadGameWithPromptResponses(responses) {
@@ -104,7 +104,7 @@ describe("The Game Class", () => {
       }
     });
 
-    it("should end the game when doMove captures a king", () => {
+    it("should reject moves that attempt to capture a king", () => {
       const { Game, restore } = loadGameWithPromptResponses([
         "2",
         "Alice",
@@ -116,13 +116,23 @@ describe("The Game Class", () => {
       const board = boardObj.generateTestBoard();
       board[0][0].setPiece(new Rook(true));
       board[0][1].setPiece(new King(false));
+      board[7][4].setPiece(new King(true));
 
       game.gameBoard = { board };
       game.startingPosition = [0, 0];
-      game.currentPlayer = { name: "Alice" };
+      game.currentPlayer = {
+        name: "Alice",
+        getIsWhiteSide: () => true,
+      };
       game.p1 = { name: "Alice" };
       game.p2 = { name: "Bob" };
-      game.cursor = { setIsMoveSelection: () => {} };
+      let isMoveSelection = true;
+      game.cursor = {
+        getIsMoveSelection: () => isMoveSelection,
+        setIsMoveSelection: () => {
+          isMoveSelection = !isMoveSelection;
+        },
+      };
 
       const originalSetMessage = Screen.setMessage;
       const originalRender = Screen.render;
@@ -136,15 +146,145 @@ describe("The Game Class", () => {
         Screen.render = () => {};
         Screen.quit = () => {
           quitCalled = true;
-          throw new Error("QUIT_CALLED");
         };
 
-        expect(() => game.doMove([0, 1])).to.throw("QUIT_CALLED");
-        expect(messages).to.include("Alice wins!");
-        expect(quitCalled).to.be.true;
+        expect(() => game.doMove([0, 1])).to.not.throw();
+        expect(messages[messages.length - 1]).to.equal(
+          "Select a valid destination.",
+        );
+        expect(quitCalled).to.be.false;
+        expect(board[0][0].getPiece()).to.be.instanceOf(Rook);
+        expect(board[0][1].getPiece()).to.be.instanceOf(King);
       } finally {
         Screen.setMessage = originalSetMessage;
         Screen.render = originalRender;
+        Screen.quit = originalQuit;
+        restore();
+      }
+    });
+
+    it("should notify when the next player is in check", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      const boardObj = new Board();
+      const board = boardObj.generateTestBoard();
+      board[7][4].setPiece(new King(true));
+      board[0][4].setPiece(new King(false));
+      board[1][0].setPiece(new Rook(true));
+
+      game.gameBoard = { board };
+      game.startingPosition = [1, 0];
+      game.currentPlayer = {
+        name: "Alice",
+        getIsWhiteSide: () => true,
+        getIsHuman: () => true,
+      };
+      game.p1 = game.currentPlayer;
+      game.p2 = {
+        name: "Bob",
+        getIsWhiteSide: () => false,
+        getIsHuman: () => true,
+      };
+      game.completedMoves = { addToTail: () => {} };
+      game.cursor = {
+        getIsMoveSelection: () => false,
+        setIsMoveSelection: () => {},
+      };
+
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+      const originalSetGrid = Screen.setGrid;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+
+      const messages = [];
+
+      try {
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+        Screen.setGrid = () => {};
+        Screen.setBackgroundColor = () => {};
+
+        game.doMove([1, 4]);
+
+        expect(messages[messages.length - 1]).to.equal(
+          "Check on Bob! Bob's move!",
+        );
+      } finally {
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        Screen.setGrid = originalSetGrid;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        restore();
+      }
+    });
+
+    it("should end the game on checkmate and declare the winner", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      const boardObj = new Board();
+      const board = boardObj.generateTestBoard();
+      board[2][2].setPiece(new King(true));
+      board[2][1].setPiece(new Queen(true));
+      board[0][0].setPiece(new King(false));
+
+      game.gameBoard = { board };
+      game.startingPosition = [2, 1];
+      game.currentPlayer = {
+        name: "Alice",
+        getIsWhiteSide: () => true,
+        getIsHuman: () => true,
+      };
+      game.p1 = game.currentPlayer;
+      game.p2 = {
+        name: "Bob",
+        getIsWhiteSide: () => false,
+        getIsHuman: () => true,
+      };
+      game.completedMoves = { addToTail: () => {} };
+      game.cursor = {
+        getIsMoveSelection: () => false,
+        setIsMoveSelection: () => {},
+      };
+
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+      const originalSetGrid = Screen.setGrid;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalQuit = Screen.quit;
+
+      const messages = [];
+      let quitCalled = false;
+
+      try {
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+        Screen.setGrid = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.quit = () => {
+          quitCalled = true;
+        };
+
+        game.doMove([1, 1]);
+
+        expect(quitCalled).to.equal(true);
+        expect(messages[messages.length - 1]).to.equal(
+          "Checkmate! Alice wins!",
+        );
+      } finally {
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        Screen.setGrid = originalSetGrid;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
         Screen.quit = originalQuit;
         restore();
       }
@@ -284,6 +424,61 @@ describe("The Game Class", () => {
         expect(messages[messages.length - 1]).to.equal("Alice's move!");
         expect(game.currentPlayer.name).to.equal("Alice");
         expect(game.cursor.getIsMoveSelection()).to.equal(false);
+      } finally {
+        global.setTimeout = originalSetTimeout;
+        Math.random = originalMathRandom;
+        Screen.initialize = originalInitialize;
+        Screen.setGridLines = originalSetGridLines;
+        Screen.setBackgroundColor = originalSetBackgroundColor;
+        Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
+    it("should show a thinking message before a delayed AI move", () => {
+      const { Game, restore } = loadGameWithPromptResponses(["1", "Alice"]);
+
+      const originalSetTimeout = global.setTimeout;
+      const originalMathRandom = Math.random;
+      const originalInitialize = Screen.initialize;
+      const originalSetGridLines = Screen.setGridLines;
+      const originalSetBackgroundColor = Screen.setBackgroundColor;
+      const originalAddCommand = Screen.addCommand;
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      const messages = [];
+      const scheduledCallbacks = [];
+
+      try {
+        global.setTimeout = (fn) => {
+          scheduledCallbacks.push(fn);
+          return scheduledCallbacks.length;
+        };
+        Math.random = () => 1;
+        Screen.initialize = () => {};
+        Screen.setGridLines = () => {};
+        Screen.setBackgroundColor = () => {};
+        Screen.addCommand = () => {};
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+
+        const game = new Game();
+
+        expect(scheduledCallbacks.length).to.equal(1);
+        scheduledCallbacks.shift()();
+
+        expect(messages[messages.length - 1]).to.equal(
+          "Computer is thinking...",
+        );
+        expect(scheduledCallbacks.length).to.equal(1);
+
+        scheduledCallbacks.shift()();
+
+        expect(messages[messages.length - 1]).to.equal("Alice's move!");
+        expect(game.currentPlayer.name).to.equal("Alice");
       } finally {
         global.setTimeout = originalSetTimeout;
         Math.random = originalMathRandom;

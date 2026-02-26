@@ -163,7 +163,20 @@ class Screen {
       .fill(Screen.borderChar)
       .join("");
 
-    console.log(Screen.captures.getWhiteCaptures().join(" "));
+    const sectionWidth = Math.max(borderLength + 6, 40);
+    const sectionDivider = "=".repeat(sectionWidth);
+    const subsectionDivider = "-".repeat(sectionWidth);
+    const whiteCaptures =
+      Screen.captures.getWhiteCaptures().join(" ") || "None";
+    const blackCaptures =
+      Screen.captures.getBlackCaptures().join(" ") || "None";
+
+    console.log(sectionDivider);
+    console.log("♟  CHESS EOD");
+    console.log(sectionDivider);
+    console.log(`White Captures: ${whiteCaptures}`);
+    console.log(subsectionDivider);
+    console.log("    A  B  C  D  E  F  G  H");
     console.log(horizontalBorder);
 
     for (let row = 0; row < Screen.numRows; row++) {
@@ -196,16 +209,18 @@ class Screen {
       rowCopy.unshift(`${Screen.borderChar}`);
       rowCopy.push(`${Screen.borderChar}`);
 
-      console.log(rowCopy.join(""));
+      const rank = 8 - row;
+      console.log(`${rank} ${rowCopy.join("")} ${rank}`);
     }
 
     console.log(horizontalBorder);
-
-    console.log(Screen.captures.getBlackCaptures().join(" "));
-
-    console.log("");
-
-    console.log(Screen.message);
+    console.log("    A  B  C  D  E  F  G  H");
+    console.log(subsectionDivider);
+    console.log(`Black Captures: ${blackCaptures}`);
+    console.log(sectionDivider);
+    console.log(`Status: ${Screen.message}`);
+    console.log("Controls: arrows move | return select | f forfeit | q quit");
+    console.log(sectionDivider);
   }
 
   static setQuitMessage(quitMessage) {
