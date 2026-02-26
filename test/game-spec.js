@@ -326,6 +326,50 @@ describe("The Game Class", () => {
         restore();
       }
     });
+
+    it("should not generate a forward capture move for a pawn in game flow", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      const boardObj = new Board();
+      const board = boardObj.generateTestBoard();
+
+      const blackPawn = new Pawn(false);
+      const whitePawn = new Pawn(true);
+      const whiteQueen = {
+        isWhite: () => true,
+        getSymbol: () => "q",
+      };
+
+      board[1][3].setPiece(blackPawn);
+      board[2][3].setPiece(whiteQueen);
+      board[2][2].setPiece(whitePawn);
+
+      game.gameBoard = { board };
+      game.cursor = { currentMove: null };
+
+      try {
+        const movesList = game.validMoves(blackPawn, board[1][3]);
+        const generatedMoves = [];
+
+        let curr = movesList.head;
+        let count = 0;
+        while (curr && count < movesList.length) {
+          generatedMoves.push(curr.val.join(","));
+          curr = curr.next;
+          count++;
+        }
+
+        expect(generatedMoves).to.include("2,2");
+        expect(generatedMoves).to.not.include("2,3");
+      } finally {
+        restore();
+      }
+    });
   });
 
   describe("the forfeit() method", () => {
