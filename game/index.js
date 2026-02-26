@@ -112,11 +112,23 @@ class Game {
   }
 
   doMove(endCoords) {
+    if (!this.startingPosition) {
+      Screen.setMessage("Select a piece first.");
+      Screen.render();
+      return;
+    }
+
     const [endRow, endCol] = endCoords;
     const [startRow, startCol] = this.startingPosition;
     const board = this.gameBoard.board;
     const endPiece = board[endRow][endCol].getPiece();
     const startPiece = board[startRow][startCol].getPiece();
+
+    if (!startPiece) {
+      Screen.setMessage("Select a piece first.");
+      Screen.render();
+      return;
+    }
 
     if (endPiece) {
       Game.checkWin(endPiece, this.currentPlayer);
@@ -145,9 +157,15 @@ class Game {
     );
     this.currentPlayer =
       this.currentPlayer.name === this.p1.name ? this.p2 : this.p1;
-    this.cursor.setIsMoveSelection();
+
+    if (this.cursor.getIsMoveSelection()) {
+      this.cursor.setIsMoveSelection();
+    }
+
     board[endRow][endCol].setPiece(startPiece);
     board[startRow][startCol].setPiece(null);
+    this.startingPosition = null;
+
     Screen.setGrid(startRow, startCol, " ");
     let symbol = startPiece.getSymbol();
     symbol = startPiece.isWhite()

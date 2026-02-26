@@ -1,33 +1,62 @@
 # Terminal Chess (Node.js)
 
-A terminal-based chess app built in JavaScript with an object-oriented design, test-driven workflow, and instructional architecture for classroom use.
+A terminal-based chess game built in JavaScript with an emphasis on object-oriented design, test-driven development, and educational architecture.
+
+## Overview
+
+This started as a small learning aid project.
+
+Once I got moving, I had to finish the game.
+
+I got stuck and stepped away from it for a while, but going back through Boot.dev as a refresher gave me the momentum to come back and ship it as one of my project submissions. I hope the educators there enjoy this as much as I enjoyed building it.
+
+This repo is also part of my professional portfolio, so the `main` branch is focused on showcasing a complete, playable application.
 
 ## Features
 
-- Full board initialization and piece movement rules
+- Playable terminal chess experience
 - Two-player mode (human vs human)
 - Single-player mode (human vs basic AI)
-- Basic AI move selection with a Binary Search Tree-backed move ranking flow
-- Test suite for pieces, board behavior, and game flow integration
+- Piece movement validation and capture handling
+- Game-end flow (forfeit and king capture)
+- Tested architecture across board, pieces, and game flow
 
-## Tech Stack
+## Demo Screenshots
 
-- Node.js
-- Mocha + Chai
+Add your screenshots at the paths below (or update paths to match your structure).
 
-## Quick Start
+![Main menu / startup](assets/screenshots/startup.png)
+![Gameplay board](assets/screenshots/gameplay.png)
+![Single-player mode](assets/screenshots/single-player.png)
+![Captures and endgame](assets/screenshots/endgame.png)
+
+## Download & Setup
+
+### 1) Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd chess-eod
+```
+
+### 2) Install dependencies
 
 ```bash
 npm install
+```
+
+### 3) Run the game
+
+```bash
 node index.js
 ```
 
-At launch, choose:
+When prompted:
 
-- `1` for single-player (vs computer)
-- `2` for two-player
+- Enter `1` for single-player (vs computer)
+- Enter `2` for two-player
 
-## Run Tests
+## Running Tests
 
 ```bash
 npm test
@@ -35,53 +64,24 @@ npm test
 
 ## Controls
 
-- Arrow-key commands via screen command mapping (`up`, `down`, `left`, `right`)
-- `return` to select piece / confirm move
+- `up`, `down`, `left`, `right` to move the cursor
+- `return` to select a piece / confirm a move
 - `f` to forfeit
 - `q` to quit
 
-## Project Goals
+## Tech Stack
 
-This project is intentionally designed to support:
+- Node.js
+- Mocha
+- Chai
 
-- object-oriented programming (OOP)
-- test-driven development (TDD)
-- progressive introduction of data structures and algorithmic thinking
+## For Educators / Learners
 
-## Learning / Starter Branch
+If you want the instructional version with scaffolded exercises and concept-isolated progression, use the `starter` branch.
 
-The `main` branch is intended to showcase the app experience.
-
-For instructional use, use a separate starter branch with:
-
-- scaffolded or stubbed implementation points
-- guided exercises and docs
-- progressive concept reveal for students
-
-Instructional documentation lives in:
-
-- `docs/instructional/`
-
-## Suggested Branch Convention
-
-- `main` → polished, app-facing branch for GitHub visitors
-- `starter` (or `starter/<cohort-or-term>`) → classroom branch with stubs + exercises
-
-Examples:
-
-- `starter`
-- `starter/spring-2026`
-- `starter/fundamentals`
-
-## Suggested Release/Tag Convention
-
-Use lightweight tags to mark teaching milestones:
-
-- `app-v1.0.0` (showcase baseline)
-- `starter-v1.0.0` (initial classroom baseline)
-- `starter-v1.1.0` (updated exercises/tests)
+The `starter` branch is designed for learning OOP, TDD, complexity analysis, and data structures in staged milestones.
 
 ## Notes
 
 - The AI is intentionally simple by design.
-- The focus is architecture clarity and instructional value over chess strength.
+- The focus is clarity, architecture, and learning value over chess strength.

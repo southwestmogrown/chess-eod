@@ -283,6 +283,7 @@ describe("The Game Class", () => {
 
         expect(messages[messages.length - 1]).to.equal("Alice's move!");
         expect(game.currentPlayer.name).to.equal("Alice");
+        expect(game.cursor.getIsMoveSelection()).to.equal(false);
       } finally {
         global.setTimeout = originalSetTimeout;
         Math.random = originalMathRandom;
@@ -290,6 +291,36 @@ describe("The Game Class", () => {
         Screen.setGridLines = originalSetGridLines;
         Screen.setBackgroundColor = originalSetBackgroundColor;
         Screen.addCommand = originalAddCommand;
+        Screen.setMessage = originalSetMessage;
+        Screen.render = originalRender;
+        restore();
+      }
+    });
+
+    it("should safely handle doMove when no valid starting piece is selected", () => {
+      const { Game, restore } = loadGameWithPromptResponses([
+        "2",
+        "Alice",
+        "Bob",
+      ]);
+      const game = Object.create(Game.prototype);
+
+      const boardObj = new Board();
+      game.gameBoard = { board: boardObj.generateTestBoard() };
+      game.startingPosition = [0, 0];
+
+      const originalSetMessage = Screen.setMessage;
+      const originalRender = Screen.render;
+
+      const messages = [];
+
+      try {
+        Screen.setMessage = (msg) => messages.push(msg);
+        Screen.render = () => {};
+
+        expect(() => game.doMove([0, 1])).to.not.throw();
+        expect(messages[messages.length - 1]).to.equal("Select a piece first.");
+      } finally {
         Screen.setMessage = originalSetMessage;
         Screen.render = originalRender;
         restore();
