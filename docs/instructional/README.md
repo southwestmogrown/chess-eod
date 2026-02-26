@@ -11,6 +11,7 @@ It is intentionally separate from the project root `README.md`.
 - `starter-branch-plan.md`
 - `starter-first-commit-checklist.md`
 - `week-1-instructor-solution-guide.md`
+- `week-2-instructor-solution-guide.md`
 
 ## Recommended Sequence
 
@@ -24,6 +25,8 @@ For intentionally failing TDD exercises (separate from the main suite):
 
 - Run `npm run test:week1`
 - Implement TODOs in `starter/week1/game-behavior.js`
+- Run `npm run test:week2`
+- Implement TODOs in `starter/week2/complexity-data-structures.js`
 
 ## Instructional Positioning
 

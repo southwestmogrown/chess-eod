@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha",
     "test:regression": "mocha --grep \"The Cursor class|The Game Class\"",
-    "test:week1": "mocha starter/week1/**/*.spec.js"
+    "test:week1": "mocha starter/week1/**/*.spec.js",
+    "test:week2": "mocha starter/week2/**/*.spec.js"
   },
   "keywords": [],
   "author": "",
