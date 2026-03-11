@@ -1,6 +1,6 @@
-# Chess 4 Less
+# Terminal Chess
 
-Chess 4 Less is a polished terminal chess application built with JavaScript and Node.js. The project emphasizes clean object-oriented design, test-driven development, and a readable gameplay experience in the command line. What started as a small pet project to use
+Terminal Chess is a polished terminal chess application built with JavaScript and Node.js. The project emphasizes clean object-oriented design, test-driven development, and a readable gameplay experience in the command line. What started as a small pet project to use
 as a supplemental learning aid became a mild obsession to see a functional game.
 This is the result.
 
